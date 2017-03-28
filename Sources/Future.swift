@@ -25,8 +25,6 @@ import Dispatch
 /// Future is a proxy of value that will be available at some point in the future.
 public class Future<S>: Completing {
   public typealias Success = S
-  public typealias Handler = FutureHandler<Success>
-  public typealias CompletionHandler = Handler
 
   /// Returns either completion for complete `Future` or nil otherwise
   public var completion: Fallible<Success>? { assertAbstract() }
@@ -128,12 +126,13 @@ public extension Future {
   /// - Returns: transformed future
   func map<T>(
     executor: Executor = .primary,
+    pure: Bool = true,
     _ transform: @escaping (_ success: Success) throws -> T
     ) -> Future<T>
   {
     // Test: FutureTests.testMap_Success
     // Test: FutureTests.testMap_Failure
-    return mapSuccess(executor: executor, transform)
+    return mapSuccess(executor: executor, pure: pure, transform)
   }
 
   /// Applies the transformation to the future and flattens future returned by transformation
@@ -148,10 +147,11 @@ public extension Future {
   /// - Returns: transformed future
   func flatMap<T: Completing>(
     executor: Executor = .primary,
+    pure: Bool = true,
     transform: @escaping (_ success: Success) throws -> T
     ) -> Future<T.Success>
   {
-    return flatMapSuccess(executor: executor, transform)
+    return flatMapSuccess(executor: executor, pure: pure, transform)
   }
 
   /// Applies the transformation to the future and flattens channel returned by transformation
@@ -166,10 +166,11 @@ public extension Future {
   /// - Returns: transformed future
   func flatMap<T: Completing&Updating>(
     executor: Executor = .primary,
+    pure: Bool = true,
     transform: @escaping (_ success: Success) throws -> T
     ) -> Channel<T.Update, T.Success>
   {
-    return flatMapSuccess(executor: executor, transform)
+    return flatMapSuccess(executor: executor, pure: pure, transform)
   }
 
   /// Applies the transformation to the future
@@ -189,6 +190,7 @@ public extension Future {
   func map<T, C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     _ transform: @escaping (_ strongContext: C, _ Success: Success) throws -> T
     ) -> Future<T>
   {
@@ -196,7 +198,7 @@ public extension Future {
     // Test: FutureTests.testMapContextual_Success_ContextDead
     // Test: FutureTests.testMapContextual_Failure_ContextAlive
     // Test: FutureTests.testMapContextual_Failure_ContextDead
-    return mapSuccess(context: context, executor: executor, transform)
+    return mapSuccess(context: context, executor: executor, pure: pure, transform)
   }
 
   /// Applies the transformation to the future and flattens future returned by transformation
@@ -216,10 +218,11 @@ public extension Future {
   func flatMap<T: Completing, C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     transform: @escaping (_ strongContext: C, _ Success: Success) throws -> T
     ) -> Future<T.Success>
   {
-    return flatMapSuccess(context: context, executor: executor, transform)
+    return flatMapSuccess(context: context, executor: executor, pure: pure, transform)
   }
 
   /// Applies the transformation to the future and flattens channel returned by transformation
@@ -239,49 +242,18 @@ public extension Future {
   func flatMap<T: Completing&Updating, C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     transform: @escaping (_ strongContext: C, _ Success: Success) throws -> T
     ) -> Channel<T.Update, T.Success>
   {
-    return flatMapSuccess(context: context, executor: executor, transform)
+    return flatMapSuccess(context: context, executor: executor, pure: pure, transform)
   }
 
   /// Makes future with delayed completion
   ///
   /// - Parameter timeout: is `Double` (seconds) to delay competion of original future with.
   /// - Returns: delayed future
-  func delayed(timeout: Double) -> Future<Success>
-  {
+  func delayed(timeout: Double) -> Future<Success> {
     return delayedCompletion(timeout: timeout)
-  }
-}
-
-/// **Internal use only**
-///
-/// Each subscription to a future value will be expressed in such handler.
-/// Future will accumulate handlers until completion or deallocacion.
-public class FutureHandler<Success> {
-  typealias Block = (_ completion: Fallible<Success>, _ originalExecutor: Executor) -> Void
-  let executor: Executor
-  let block: Block
-  var owner: Future<Success>?
-
-  init(executor: Executor,
-       block: @escaping Block,
-       owner: Future<Success>)
-  {
-    self.executor = executor
-    self.block = block
-    self.owner = owner
-  }
-
-  func handle(_ value: Fallible<Success>, from originalExecutor: Executor?) {
-    self.executor.execute(from: originalExecutor) {
-      (originalExecutor) in
-      self.block(value, originalExecutor)
-    }
-  }
-
-  func releaseOwner() {
-    self.owner = nil
   }
 }

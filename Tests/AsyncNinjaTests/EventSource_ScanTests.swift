@@ -27,7 +27,7 @@ import Dispatch
   import Glibc
 #endif
 
-class Channel_Scan: XCTestCase {
+class EventSource_ScanTests: XCTestCase {
 
   static let allTests = [
     ("testScanContextual", testScanContextual),

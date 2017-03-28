@@ -39,6 +39,8 @@ class ChannelTests: XCTestCase {
     ("testBuffering2", testBuffering2),
     ("testBuffering3", testBuffering3),
     ("testBuffering10", testBuffering10),
+    ("testDescription", testDescription),
+    ("testDoubleBind", testDoubleBind),
   ]
 
   func testIterators() {
@@ -231,22 +233,8 @@ class ChannelTests: XCTestCase {
   }
 
   func testDoubleBind() {
-    class Actor<T>: TestActor {
-      var dynamicValue: DynamicProperty<T> { return _dynamicValue }
-      var value: T {
-        get { return _dynamicValue.value }
-        set { _dynamicValue.value = newValue }
-      }
-      private var _dynamicValue: DynamicProperty<T>!
-
-      init(initialValue: T) {
-        super.init()
-        _dynamicValue = makeDynamicProperty(initialValue)
-      }
-    }
-
-    let majorActor = Actor<Int>(initialValue: 3)
-    let minorActor = Actor<Int>(initialValue: 4)
+    let majorActor = DoubleBindTestActor<Int>(initialValue: 3)
+    let minorActor = DoubleBindTestActor<Int>(initialValue: 4)
     doubleBind(majorActor.dynamicValue, minorActor.dynamicValue)
 
     func test(value: Int, file: StaticString = #file, line: UInt = #line) {
@@ -268,5 +256,19 @@ class ChannelTests: XCTestCase {
 
     majorActor.value = 7
     test(value: 7)
+  }
+}
+
+fileprivate class DoubleBindTestActor<T>: TestActor {
+  var dynamicValue: DynamicProperty<T> { return _dynamicValue }
+  var value: T {
+    get { return _dynamicValue.value }
+    set { _dynamicValue.value = newValue }
+  }
+  private var _dynamicValue: DynamicProperty<T>!
+
+  init(initialValue: T) {
+    super.init()
+    _dynamicValue = makeDynamicProperty(initialValue)
   }
 }

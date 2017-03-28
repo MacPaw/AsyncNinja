@@ -22,92 +22,227 @@
 
 import Dispatch
 
-// MARK: - transforms
+// MARK: - internal transforms
 
-public extension Completing {
-  /// Transforms Completing<SuccessA> => Completing<SuccessB>
-  ///
-  /// This method is suitable for **pure**ish transformations (not changing shared state).
-  /// Use method mapCompletion(context:executor:transform:) for state changing transformations.
-  func mapCompletion<Transformed>(
+extension Completing {
+
+  /// **internal use only**
+  func _mapCompletion<T>(
     executor: Executor = .primary,
-    _ transform: @escaping (Fallible<Success>) throws -> Transformed
-    ) -> Future<Transformed> {
-    let promise = Promise<Transformed>()
+    pure: Bool,
+    _ transform: @escaping (_ completion: Fallible<Success>) throws -> T
+    ) -> Promise<T>
+  {
+    let promise = Promise<T>()
     let handler = makeCompletionHandler(executor: executor) {
       [weak promise] (completion, originalExecutor) -> Void in
-      guard case .some = promise else { return }
+      if pure, case .none = promise { return }
       let transformedValue = fallible { try transform(completion) }
       promise?.complete(transformedValue, from: originalExecutor)
     }
-    promise._asyncNinja_retainHandlerUntilFinalization(handler)
+    if pure {
+      promise._asyncNinja_retainHandlerUntilFinalization(handler)
+    } else {
+      self._asyncNinja_retainHandlerUntilFinalization(handler)
+    }
     return promise
   }
 
-  /// Transforms Completing<SuccessA> => Future<SuccessB>. Flattens future returned by the transform
+  /// **internal use only**
+  func _flatRecover<T: Completing>(
+    executor: Executor = .primary,
+    pure: Bool,
+    _ transform: @escaping (_ failure: Swift.Error) throws -> T
+    ) -> Promise<Success> where T.Success == Success
+  {
+    let promise = Promise<Success>()
+    let handler = makeCompletionHandler(executor: executor) {
+      [weak promise] (completion, originalExecutor) -> Void in
+      if pure, case .none = promise { return }
+      
+      switch completion {
+      case let .success(success):
+        promise?.succeed(success, from: originalExecutor)
+      case let .failure(failure):
+        do { promise?.complete(with: try transform(failure)) }
+        catch { promise?.fail(error, from: originalExecutor) }
+      }
+    }
+    promise._asyncNinja_retainHandlerUntilFinalization(handler)
+    if pure {
+      promise._asyncNinja_retainHandlerUntilFinalization(handler)
+    } else {
+      self._asyncNinja_retainHandlerUntilFinalization(handler)
+    }
+    return promise
+  }
+}
+
+// MARK: - public transforms
+
+public extension Completing {
+
+  /// Transforms the `Completing` to a `Future` with transformation `(Fallible<Success>) -> T`.
   ///
-  /// This method is suitable for **pure**ish transformations (not changing shared state).
-  /// Use method flatMapCompletion(context:executor:transform:) for state changing transformations.
+  /// - Parameters:
+  ///   - executor: to perform transform on
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - completion: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
+  func mapCompletion<T>(
+    executor: Executor = .primary,
+    pure: Bool = true,
+    _ transform: @escaping (_ completion: Fallible<Success>) throws -> T
+    ) -> Future<T>
+  {
+    return _mapCompletion(executor: executor, pure: pure, transform)
+  }
+
+  /// Transforms the `Completing` to a `Future` with transformation `(Fallible<Success>) -> Completing`.
+  ///
+  /// - Parameters:
+  ///   - executor: to perform transform on
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - completion: of the `Completing`
+  /// - Returns: `Future` that will complete with completion of returned `Completing`
   func flatMapCompletion<T: Completing>(
     executor: Executor = .primary,
-    _ transform: @escaping (Fallible<Success>) throws -> T
-    ) -> Future<T.Success> {
-    return mapCompletion(executor: executor, transform).flatten()
+    pure: Bool = true,
+    _ transform: @escaping (_ completion: Fallible<Success>) throws -> T
+    ) -> Future<T.Success>
+  {
+    return mapCompletion(executor: executor, pure: pure, transform).flatten()
   }
 
-  /// Transforms Completing<SuccessA> => Channel<SuccessB>. Flattens channel returned by the transform
+  /// Transforms the `Completing` to a `Channel` with transformation `(Fallible<Success>) -> Completing&Updating`.
   ///
-  /// This method is suitable for **pure**ish transformations (not changing shared state).
-  /// Use method flatMapCompletion(context:executor:transform:) for state changing transformations.
+  /// - Parameters:
+  ///   - executor: to perform transform on
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - completion: of the `Completing`
+  /// - Returns: `Channel` that will complete with completion of returned `Completing&Updating`
   func flatMapCompletion<T: Completing&Updating>(
     executor: Executor = .primary,
-    _ transform: @escaping (Fallible<Success>) throws -> T
-    ) -> Channel<T.Update, T.Success> {
-    return mapCompletion(executor: executor, transform).flatten()
+    pure: Bool = true,
+    _ transform: @escaping (_ completion: Fallible<Success>) throws -> T
+    ) -> Channel<T.Update, T.Success>
+  {
+    return mapCompletion(executor: executor, pure: pure, transform).flatten()
   }
 
-  /// Transforms Completing<SuccessA> => Future<SuccessB>
+  /// Transforms the `Completing` to a `Future` with transformation `(Success) -> T`.
+  /// Failure of the `Completing` will be the fail of the returned `Future`.
   ///
-  /// This is the same as mapCompletion(executor:transform:)
-  /// but does not perform transformation if this future fails.
-  func mapSuccess<Transformed>(
+  /// - Parameters:
+  ///   - executor: to perform transform on
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - success: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
+  func mapSuccess<T>(
     executor: Executor = .primary,
-    _ transform: @escaping (Success) throws -> Transformed
-    ) -> Future<Transformed> {
-    return mapCompletion(executor: executor) { (value) -> Transformed in
-      let transformedValue = try value.liftSuccess()
-      return try transform(transformedValue)
+    pure: Bool = true,
+    _ transform: @escaping (_ success: Success) throws -> T
+    ) -> Future<T>
+  {
+    return mapCompletion(executor: executor, pure: pure) {
+      try transform(try $0.liftSuccess())
     }
   }
 
-  /// Transforms Completing<SuccessA> => Future<SuccessB>. Flattens future returned by the transform
+  /// Transforms the `Completing` to a `Future` with transformation `(Success) -> Completing`.
+  /// Failure of the `Completing` will be the fail of the returned `Future`.
   ///
-  /// This is the same as flatMapCompletion(executor:transform:)
-  /// but does not perform transformation if this future fails.
+  /// - Parameters:
+  ///   - executor: to perform transform on
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - success: of the `Completing`
+  /// - Returns: `Future` that will complete with completion of returned `Completing`
   func flatMapSuccess<T: Completing>(
     executor: Executor = .primary,
-    _ transform: @escaping (Success) throws -> T
-    ) -> Future<T.Success> {
-    return mapSuccess(executor: executor, transform).flatten()
+    pure: Bool = true,
+    _ transform: @escaping (_ success: Success) throws -> T
+    ) -> Future<T.Success>
+  {
+    return mapSuccess(executor: executor, pure: pure, transform).flatten()
   }
 
-  /// Transforms Completing<SuccessA> => Channel<Update, BSuccessB>. Flattens channel returned by the transform
+  /// Transforms the `Completing` to a `Channel` with transformation `(Success) -> Completing&Updating`.
+  /// Failure of the `Completing` will be the fail of the returned `Channel`.
   ///
-  /// This is the same as flatMapCompletion(executor:transform:)
-  /// but does not perform transformation if this future fails.
+  /// - Parameters:
+  ///   - executor: to perform transform on
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - success: of the `Completing`
+  /// - Returns: `Channel` that will complete with completion of returned `Completing&Updating`
   func flatMapSuccess<T: Completing&Updating>(
     executor: Executor = .primary,
-    _ transform: @escaping (Success) throws -> T
-    ) -> Channel<T.Update, T.Success> {
-    return mapSuccess(executor: executor, transform).flatten()
+    pure: Bool = true,
+    _ transform: @escaping (_ success: Success) throws -> T
+    ) -> Channel<T.Update, T.Success>
+  {
+    return mapSuccess(executor: executor, pure: pure, transform).flatten()
   }
 
-  /// Recovers failure of this future if there is one
+  /// Recovers from all failures with specified success.
+  /// Success of the `Completing` will be the success of the returned `Future`.
+  ///
+  /// - Parameter success: to recover with.
+  /// - Returns: `Future` that will always succeed
   func recover(with success: Success) -> Future<Success> {
     return recover(executor: .immediate) { _ in success }
   }
 
-  /// Recovers failure of this future if there is one
+  /// Recovers from errors equal to a specified error with specified success.
+  ///
+  /// - Parameters:
+  ///   - specificError: error to recover from
+  ///   - success: to recover with.
+  /// - Returns: `Future` that will
+  ///   - succeed when the `Completing` succeeds
+  ///   - or if failure of the `Compleing` is equal to the specified error will succeed with specified success
+  ///   - or will fail with a failure of `Completing`
   func recover<E: Swift.Error>(
     from specificError: E,
     with success: Success
@@ -123,29 +258,58 @@ public extension Completing {
     }
   }
 
-  /// Recovers failure of this future if there is one
+  /// Transforms the `Completing` to a `Future` with transformation `(Error) -> Success`.
+  /// Success of the `Completing` will be the success of the returned `Future`.
+  ///
+  /// - Parameters:
+  ///   - executor: to perform transform on
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - failure: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
   func recover(
     executor: Executor = .primary,
-    _ transform: @escaping (Swift.Error) throws -> Success
+    pure: Bool = true,
+    _ transform: @escaping (_ failure: Swift.Error) throws -> Success
     ) -> Future<Success>
   {
-    return mapCompletion(executor: executor) {
-      (value) -> Success in
-      switch value {
+    return mapCompletion(executor: executor, pure: pure) {
+      switch $0 {
       case .success(let success): return success
       case .failure(let failure): return try transform(failure)
       }
     }
   }
 
-  /// Recovers failure of this future if there is one
+  /// Transforms the `Completing` to a `Future` with transformation `(E) -> Success`.
+  /// Success of the `Completing` will be the success of the returned `Future`.
+  ///
+  /// - Parameters:
+  ///   - executor: to perform transform on
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - failure: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
   func recover<E: Swift.Error>(
     from specificError: E,
     executor: Executor = .primary,
-    _ transform: @escaping (E) throws -> Success
+    pure: Bool = true,
+    _ transform: @escaping (_ failure: E) throws -> Success
     ) -> Future<Success> where E: Equatable
   {
-    return recover(executor: executor) {
+    return recover(executor: executor, pure: pure) {
       if let myError = $0 as? E, myError == specificError {
         return try transform(myError)
       } else {
@@ -153,136 +317,267 @@ public extension Completing {
       }
     }
   }
-  
-  /// Recovers failure of this future if there is one. Flattens future returned by the transform
-  func flatRecover(
+
+  /// Transforms the `Completing` to a `Future` with transformation `(E) -> Completing`.
+  /// Success of the `Completing` will be the success of the returned `Future`.
+  ///
+  /// - Parameters:
+  ///   - executor: to perform transform on
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - failure: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
+  func flatRecover<T: Completing>(
     executor: Executor = .primary,
-    _ transform: @escaping (Swift.Error) throws -> Future<Success>
-    ) -> Future<Success> {
-    let promise = Promise<Success>()
-    let handler = makeCompletionHandler(executor: executor) {
-      [weak promise] (completion, originalExecutor) -> Void in
-      guard case .some = promise else { return }
-      
-      switch completion {
-      case let .success(success):
-        promise?.succeed(success, from: originalExecutor)
-      case let .failure(failure):
-        do { promise?.complete(with: try transform(failure)) }
-        catch { promise?.fail(error, from: originalExecutor) }
-      }
-    }
-    promise._asyncNinja_retainHandlerUntilFinalization(handler)
-    return promise
+    pure: Bool = true,
+    _ transform: @escaping (_ failure: Swift.Error) throws -> T
+    ) -> Future<Success> where T.Success == Success
+  {
+    return _flatRecover(executor: executor, pure: pure, transform)
   }
   
-  /// Recovers failure of this future if there is one. Flattens future returned by the transform
-  func flatRecover<E: Swift.Error>(
+  /// Transforms the `Completing` to a `Future` with transformation `(E) -> Completing`.
+  /// Success of the `Completing` will be the success of the returned `Future`.
+  ///
+  /// - Parameters:
+  ///   - specificError: error to recover from
+  ///   - executor: to perform transform on
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - failure: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
+  func flatRecover<T: Completing, E: Swift.Error>(
     from specificError: E,
     executor: Executor = .primary,
-    _ transform: @escaping (E) throws -> Future<Success>
-    ) -> Future<Success> where E: Equatable
+    pure: Bool = true,
+    _ transform: @escaping (_ failure: E) throws -> T
+    ) -> Future<Success> where T.Success == Success, E: Equatable
   {
-    return flatRecover(executor: executor) {
-      if let myError = $0 as? E, myError == specificError {
-        return try transform(myError)
-      } else {
-        throw $0
-      }
+    return flatRecover(executor: executor, pure: pure) { (error: Swift.Error) -> T in
+      guard let myError = error as? E, myError == specificError
+        else { throw error }
+      return try transform(myError)
     }
   }
 }
 
-// MARK: - contextual transforms
+// MARK: - public contextual transforms
 
 public extension Completing {
-  /// Transforms Completing<SuccessA> => Completing<SuccessB>
+
+  /// Transforms the `Completing` to a `Future` with transformation `(Fallible<Success>) -> T`.
   ///
-  /// This method is suitable for impure transformations (changing state of context).
-  /// Use method mapCompletion(context:transform:) for pure -ish transformations.
+  /// - Parameters:
+  ///   - context: `ExectionContext` to apply transformation in
+  ///   - executor: override of `ExecutionContext`s executor.
+  ///     Keep default value of the argument unless you need to override
+  ///     an executor provided by the context
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - completion: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
   func mapCompletion<Transformed, C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     _ transform: @escaping (C, Fallible<Success>) throws -> Transformed
-    ) -> Future<Transformed> {
-    return mapCompletion(executor: executor ?? context.executor) {
+    ) -> Future<Transformed>
+  {
+    let promise = _mapCompletion(executor: executor ?? context.executor, pure: pure) {
       [weak context] (value) -> Transformed in
       guard let context = context else { throw AsyncNinjaError.contextDeallocated }
       return try transform(context, value)
     }
+    context.addDependent(completable: promise)
+    return promise
   }
 
-  /// Transforms Comletable<SuccessA> => Future<SuccessB>. Flattens future returned by the transform
+  /// Transforms the `Completing` to a `Future` with transformation `(Fallible<Success>) -> Completing`.
   ///
-  /// This method is suitable for impure transformations (changing state of context).
-  /// Use method flatMapCompletion(context:transform:) for pure -ish transformations.
+  /// - Parameters:
+  ///   - context: `ExectionContext` to apply transformation in
+  ///   - executor: override of `ExecutionContext`s executor.
+  ///     Keep default value of the argument unless you need to override
+  ///     an executor provided by the context
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - completion: of the `Completing`
+  /// - Returns: `Future` that will complete with completion of returned `Completing`
   func flatMapCompletion<T: Completing, C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     _ transform: @escaping (C, Fallible<Success>) throws -> T
-    ) -> Future<T.Success> {
-    return mapCompletion(context: context, executor: executor, transform).flatten()
+    ) -> Future<T.Success>
+  {
+    return mapCompletion(context: context, executor: executor, pure: pure, transform).flatten()
   }
 
-  /// Transforms Comletable<SuccessA> => Channel<UpdateB, SuccessB>. Flattens channel returned by the transform
+  /// Transforms the `Completing` to a `Channel` with transformation `(Fallible<Success>) -> Completing&Updating`.
   ///
-  /// This method is suitable for impure transformations (changing state of context).
-  /// Use method flatMapCompletion(context:transform:) for pure -ish transformations.
+  /// - Parameters:
+  ///   - context: `ExectionContext` to apply transformation in
+  ///   - executor: override of `ExecutionContext`s executor.
+  ///     Keep default value of the argument unless you need to override
+  ///     an executor provided by the context
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - completion: of the `Completing`
+  /// - Returns: `Channel` that will complete with completion of returned `Completing&Updating`
   func flatMapCompletion<T: Completing&Updating, C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     _ transform: @escaping (C, Fallible<Success>) throws -> T
-    ) -> Channel<T.Update, T.Success> {
-    return mapCompletion(context: context, executor: executor, transform).flatten()
+    ) -> Channel<T.Update, T.Success>
+  {
+    return mapCompletion(context: context, executor: executor, pure: pure, transform).flatten()
   }
 
-  /// Transforms Completing<SuccessA> => Future<SuccessB>
+  /// Transforms the `Completing` to a `Future` with transformation `(Success) -> T`.
+  /// Failure of the `Completing` will be the fail of the returned `Future`.
   ///
-  /// This is the same as mapCompletion(context:executor:transform:)
-  /// but does not perform transformation if this future fails.
+  /// - Parameters:
+  ///   - context: `ExectionContext` to apply transformation in
+  ///   - executor: override of `ExecutionContext`s executor.
+  ///     Keep default value of the argument unless you need to override
+  ///     an executor provided by the context
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - success: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
   func mapSuccess<Transformed, C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     _ transform: @escaping (C, Success) throws -> Transformed
-    ) -> Future<Transformed> {
-    return mapCompletion(context: context, executor: executor) {
+    ) -> Future<Transformed>
+  {
+    return mapCompletion(context: context, executor: executor, pure: pure) {
       (context, value) -> Transformed in
       let success = try value.liftSuccess()
       return try transform(context, success)
     }
   }
 
-  /// Transforms Completing<SuccessA> => Future<SuccessB>. Flattens future returned by the transform
+  /// Transforms the `Completing` to a `Future` with transformation `(Success) -> Completing`.
+  /// Failure of the `Completing` will be the fail of the returned `Future`.
   ///
-  /// This is the same as flatMapCompletion(context:executor:transform:)
-  /// but does not perform transformation if this future fails.
+  /// - Parameters:
+  ///   - context: `ExectionContext` to apply transformation in
+  ///   - executor: override of `ExecutionContext`s executor.
+  ///     Keep default value of the argument unless you need to override
+  ///     an executor provided by the context
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - success: of the `Completing`
+  /// - Returns: `Future` that will complete with completion of returned `Completing`
   func flatMapSuccess<T: Completing, C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     _ transform: @escaping (C, Success) throws -> T
-    ) -> Future<T.Success> {
-    return mapSuccess(context: context, executor: executor, transform).flatten()
+    ) -> Future<T.Success>
+  {
+    return mapSuccess(context: context, executor: executor, pure: pure, transform).flatten()
   }
 
-  /// Transforms Completing<SuccessA> => Channel<UpdateB, SuccessB>. Flattens channel returned by the transform
+  /// Transforms the `Completing` to a `Channel` with transformation `(Success) -> Completing&Updating`.
+  /// Failure of the `Completing` will be the fail of the returned `Channel`.
   ///
-  /// This is the same as flatMapCompletion(context:executor:transform:)
-  /// but does not perform transformation if this future fails.
+  /// - Parameters:
+  ///   - context: `ExectionContext` to apply transformation in
+  ///   - executor: override of `ExecutionContext`s executor.
+  ///     Keep default value of the argument unless you need to override
+  ///     an executor provided by the context
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - success: of the `Completing`
+  /// - Returns: `Channel` that will complete with completion of returned `Completing&Updating`
   func flatMapSuccess<T: Completing&Updating, C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     _ transform: @escaping (C, Success) throws -> T
-    ) -> Channel<T.Update, T.Success> {
-    return mapSuccess(context: context, executor: executor, transform).flatten()
+    ) -> Channel<T.Update, T.Success>
+  {
+    return mapSuccess(context: context, executor: executor, pure: pure, transform).flatten()
   }
 
-  /// Recovers failure of this future if there is one with contextual transformer.
+  /// Transforms the `Completing` to a `Future` with transformation `(Error) -> Success`.
+  /// Success of the `Completing` will be the success of the returned `Future`.
+  ///
+  /// - Parameters:
+  ///   - context: `ExectionContext` to apply transformation in
+  ///   - executor: override of `ExecutionContext`s executor.
+  ///     Keep default value of the argument unless you need to override
+  ///     an executor provided by the context
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - failure: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
   func recover<C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     _ transform: @escaping (C, Swift.Error) throws -> Success
-    ) -> Future<Success> {
-    return mapCompletion(context: context, executor: executor) {
+    ) -> Future<Success>
+  {
+    return mapCompletion(context: context, executor: executor, pure: pure) {
       (context, value) -> Success in
       switch value {
       case .success(let success):
@@ -293,15 +588,33 @@ public extension Completing {
     }
   }
 
-  /// Recovers failure of this future if there is one with contextual transformer.
+  /// Transforms the `Completing` to a `Future` with transformation `(E) -> Success`.
+  /// Success of the `Completing` will be the success of the returned `Future`.
+  ///
+  /// - Parameters:
+  ///   - context: `ExectionContext` to apply transformation in
+  ///   - executor: override of `ExecutionContext`s executor.
+  ///     Keep default value of the argument unless you need to override
+  ///     an executor provided by the context
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - failure: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
   func recover<E: Swift.Error, C: ExecutionContext>(
     from specificError: E,
     context: C,
     executor: Executor? = nil,
+    pure: Bool = true,
     _ transform: @escaping (C, E) throws -> Success
     ) -> Future<Success> where E: Equatable
   {
-    return recover(context: context, executor: executor) {
+    return recover(context: context, executor: executor, pure: pure) {
       (context, error) in
       if let myError = error as? E, myError == specificError {
         return try transform(context, myError)
@@ -311,45 +624,86 @@ public extension Completing {
     }
   }
   
-  /// Recovers failure of this future if there is one with contextual transformer.
-  /// Flattens future returned by the transform
-  func flatRecover<C: ExecutionContext>(
+  /// Transforms the `Completing` to a `Future` with transformation `(E) -> Completing`.
+  /// Success of the `Completing` will be the success of the returned `Future`.
+  ///
+  /// - Parameters:
+  ///   - context: `ExectionContext` to apply transformation in
+  ///   - executor: override of `ExecutionContext`s executor.
+  ///     Keep default value of the argument unless you need to override
+  ///     an executor provided by the context
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - failure: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
+  func flatRecover<T: Completing, C: ExecutionContext>(
     context: C,
     executor: Executor? = nil,
-    _ transform: @escaping (C, Swift.Error) throws -> Future<Success>
-    ) -> Future<Success>
+    pure: Bool = true,
+    _ transform: @escaping (C, Swift.Error) throws -> T
+    ) -> Future<Success> where T.Success == Success
   {
-    return flatRecover(executor: executor ?? context.executor) {
-      [weak context] (failure) -> Future<Success> in
+    let promise = _flatRecover(executor: executor ?? context.executor, pure: pure) {
+      [weak context] (failure) -> T in
       guard let context = context else { throw AsyncNinjaError.contextDeallocated }
       return try transform(context, failure)
     }
+    context.addDependent(completable: promise)
+    return promise
   }
   
-  /// Recovers failure of this future if there is one with contextual transformer.
-  /// Flattens future returned by the transform
-  func flatRecover<E: Swift.Error, C: ExecutionContext>(
+  /// Transforms the `Completing` to a `Future` with transformation `(E) -> Completing`.
+  /// Success of the `Completing` will be the success of the returned `Future`.
+  ///
+  /// - Parameters:
+  ///   - specificError: error to recover from
+  ///   - context: `ExectionContext` to apply transformation in
+  ///   - executor: override of `ExecutionContext`s executor.
+  ///     Keep default value of the argument unless you need to override
+  ///     an executor provided by the context
+  ///   - pure: defines if the transfromation is pure.
+  ///     Pure transformations have no side effects:
+  ///     - do not change shared state
+  ///     - do not write data on disk
+  ///     - ...
+  ///
+  ///     Transformations with side effects are impure.
+  ///   - transform: transformation to perform
+  ///   - failure: of the `Completing`
+  /// - Returns: `Future` that will complete with transformed value
+  func flatRecover<T: Completing, E: Swift.Error, C: ExecutionContext>(
     from specificError: E,
     context: C,
     executor: Executor? = nil,
-    _ transform: @escaping (C, Swift.Error) throws -> Future<Success>
-    ) -> Future<Success> where E: Equatable
+    pure: Bool = true,
+    _ transform: @escaping (C, Swift.Error) throws -> T
+    ) -> Future<Success> where T.Success == Success, E: Equatable
   {
-    return flatRecover(context: context, executor: executor) {
-      (context, error) in
-      if let myError = error as? E, myError == specificError {
-        return try transform(context, myError)
-      } else {
-        throw error
-      }
+    return flatRecover(context: context, executor: executor, pure: pure) {
+      (context, error) -> T in
+      guard let myError = error as? E, myError == specificError
+        else { throw error }
+      return try transform(context, myError)
     }
   }
 }
 
+// MARK: - delayed
+
 public extension Completing {
 
   /// Returns future that completes after a timeout after completion of self
-  func delayedCompletion(timeout: Double, on executor: Executor = .primary) -> Future<Success> {
+  func delayedCompletion(
+    timeout: Double,
+    on executor: Executor = .primary
+    ) -> Future<Success>
+  {
     let promise = Promise<Success>()
     let handler = makeCompletionHandler(executor: .immediate) {
       [weak promise] (completion, _) in
@@ -359,12 +713,12 @@ public extension Completing {
       }
     }
     promise._asyncNinja_retainHandlerUntilFinalization(handler)
-
     return promise
   }
 }
 
 // MARK: - Flattening
+
 public extension Future where S: Completing {
   /// Flattens two nested futures
   ///

@@ -22,7 +22,7 @@
 
 import Dispatch
 
-public extension EventsSource {
+public extension EventSource {
   
   /// Adds indexes to update values of the channel
   ///
@@ -79,13 +79,15 @@ public extension EventsSource {
   /// - Returns: channel with tuple (update, update) as update value
   func bufferedPairs(cancellationToken: CancellationToken? = nil,
                      bufferSize: DerivedChannelBufferSize = .default
-    ) -> Channel<(Update, Update), Success> {
+    ) -> Channel<(Update, Update), Success>
+  {
     var locking = makeLocking()
     var previousUpdate: Update? = nil
     
-    return self.makeProducer(executor: .immediate,
-                             cancellationToken: cancellationToken,
-                             bufferSize: bufferSize)
+    return makeProducer(executor: .immediate,
+                        pure: true,
+                        cancellationToken: cancellationToken,
+                        bufferSize: bufferSize)
     {
       (value, producer, originalExecutor) in
       switch value {
@@ -97,10 +99,10 @@ public extension EventsSource {
         
         if let previousUpdate = _previousUpdate {
           let change = (previousUpdate, update)
-          producer.update(change, from: originalExecutor)
+          producer.value?.update(change, from: originalExecutor)
         }
       case let .completion(completion):
-        producer.complete(completion, from: originalExecutor)
+        producer.value?.complete(completion, from: originalExecutor)
       }
     }
   }
@@ -120,14 +122,16 @@ public extension EventsSource {
   func buffered(capacity: Int,
                 cancellationToken: CancellationToken? = nil,
                 bufferSize: DerivedChannelBufferSize = .default
-    ) -> Channel<[Update], Success> {
+    ) -> Channel<[Update], Success>
+  {
     var buffer = [Update]()
     buffer.reserveCapacity(capacity)
     var locking = makeLocking()
     
-    return self.makeProducer(executor: .immediate,
-                             cancellationToken: cancellationToken,
-                             bufferSize: bufferSize)
+    return makeProducer(executor: .immediate,
+                        pure: true,
+                        cancellationToken: cancellationToken,
+                        bufferSize: bufferSize)
     {
       (value, producer, originalExecutor) in
       locking.lock()
@@ -139,7 +143,7 @@ public extension EventsSource {
           let localBuffer = buffer
           buffer.removeAll(keepingCapacity: true)
           locking.unlock()
-          producer.update(localBuffer, from: originalExecutor)
+          producer.value?.update(localBuffer, from: originalExecutor)
         } else {
           locking.unlock()
         }
@@ -149,9 +153,9 @@ public extension EventsSource {
         locking.unlock()
         
         if !localBuffer.isEmpty {
-          producer.update(localBuffer, from: originalExecutor)
+          producer.value?.update(localBuffer, from: originalExecutor)
         }
-        producer.complete(completion, from: originalExecutor)
+        producer.value?.complete(completion, from: originalExecutor)
       }
     }
   }
@@ -172,13 +176,13 @@ public extension EventsSource {
                      cancellationToken: CancellationToken? = nil,
                      bufferSize: DerivedChannelBufferSize = .default
     ) -> Channel<Update, Success> {
-    return self.makeProducer(executor: .immediate,
-                             cancellationToken: cancellationToken,
-                             bufferSize: bufferSize)
+    return makeProducer(executor: .immediate, pure: true,
+                        cancellationToken: cancellationToken,
+                        bufferSize: bufferSize)
     {
-      (event: Event, producer: BaseProducer<Update, Success>, originalExecutor: Executor) -> Void in
-      delayingExecutor.execute(after: timeout) { [weak producer] (originalExecutor) in
-        producer?.apply(event, from: originalExecutor)
+      (event: Event, producer, originalExecutor: Executor) -> Void in
+      delayingExecutor.execute(after: timeout) { (originalExecutor) in
+        producer.value?.post(event, from: originalExecutor)
       }
     }
   }
@@ -203,7 +207,7 @@ public extension EventsSource {
                 bufferSize: DerivedChannelBufferSize = .default
     ) -> Channel<Update, Success> {
     
-    // Test: Channel_TransformTests.testDebounce
+    // Test: EventSource_TransformTests.testDebounce
     let bufferSize_ = bufferSize.bufferSize(self)
     let producer = Producer<Update, Success>(bufferSize: bufferSize_)
     var locking = makeLocking()
@@ -265,7 +269,7 @@ public extension EventsSource {
 
 // MARK: - Distinct
 
-extension EventsSource {
+extension EventSource {
   /// Returns channel of distinct update values of original channel.
   /// Requires dedicated equality checking closure
   ///
@@ -279,16 +283,17 @@ extension EventsSource {
   ///   - isEqual: closure that tells if specified values are equal
   /// - Returns: channel with distinct update values
   func distinct(cancellationToken: CancellationToken? = nil,
-                         bufferSize: DerivedChannelBufferSize = .default,
-                         isEqual: @escaping (Update, Update) -> Bool
-    ) -> Channel<Update, Success> {
-    
+                bufferSize: DerivedChannelBufferSize = .default,
+                isEqual: @escaping (Update, Update) -> Bool
+    ) -> Channel<Update, Success>
+  {
     var locking = makeLocking()
     var previousUpdate: Update? = nil
     
-    return self.makeProducer(executor: .immediate,
-                             cancellationToken: cancellationToken,
-                             bufferSize: bufferSize)
+    return makeProducer(executor: .immediate,
+                        pure: true,
+                        cancellationToken: cancellationToken,
+                        bufferSize: bufferSize)
     {
       (value, producer, originalExecutor) in
       switch value {
@@ -301,19 +306,19 @@ extension EventsSource {
         
         if let previousUpdate = _previousUpdate {
           if !isEqual(previousUpdate, update) {
-            producer.update(update, from: originalExecutor)
+            producer.value?.update(update, from: originalExecutor)
           }
         } else {
-          producer.update(update, from: originalExecutor)
+          producer.value?.update(update, from: originalExecutor)
         }
       case let .completion(completion):
-        producer.complete(completion, from: originalExecutor)
+        producer.value?.complete(completion, from: originalExecutor)
       }
     }
   }
 }
 
-extension EventsSource where Update: Equatable {
+extension EventSource where Update: Equatable {
   
   /// Returns channel of distinct update values of original channel.
   /// Works only for equatable update values
@@ -331,12 +336,12 @@ extension EventsSource where Update: Equatable {
                        bufferSize: DerivedChannelBufferSize = .default
     ) -> Channel<Update, Success> {
     
-    // Test: Channel_TransformTests.testDistinctInts
+    // Test: EventSource_TransformTests.testDistinctInts
     return distinct(cancellationToken: cancellationToken, bufferSize: bufferSize, isEqual: ==)
   }
 }
 
-extension EventsSource where Update: AsyncNinjaOptionalAdaptor, Update.AsyncNinjaWrapped: Equatable {
+extension EventSource where Update: AsyncNinjaOptionalAdaptor, Update.AsyncNinjaWrapped: Equatable {
   
   /// Returns channel of distinct update values of original channel.
   /// Works only for equatable wrapped in optionals
@@ -354,14 +359,14 @@ extension EventsSource where Update: AsyncNinjaOptionalAdaptor, Update.AsyncNinj
                        bufferSize: DerivedChannelBufferSize = .default
     ) -> Channel<Update, Success> {
     
-    // Test: Channel_TransformTests.testDistinctInts
+    // Test: EventSource_TransformTests.testDistinctInts
     return distinct(cancellationToken: cancellationToken, bufferSize: bufferSize) {
       $0.asyncNinjaOptionalValue == $1.asyncNinjaOptionalValue
     }
   }
 }
 
-extension EventsSource where Update: Collection, Update.Iterator.Element: Equatable {
+extension EventSource where Update: Collection, Update.Iterator.Element: Equatable {
   
   /// Returns channel of distinct update values of original channel.
   /// Works only for collections of equatable values
@@ -379,7 +384,7 @@ extension EventsSource where Update: Collection, Update.Iterator.Element: Equata
                        bufferSize: DerivedChannelBufferSize = .default
     ) -> Channel<Update, Success> {
     
-    // Test: Channel_TransformTests.testDistinctArray
+    // Test: EventSource_TransformTests.testDistinctArray
     return distinct(cancellationToken: cancellationToken, bufferSize: bufferSize) {
       return $0.count == $1.count
         && !zip($0, $1).contains { $0 != $1 }
