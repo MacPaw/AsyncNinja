@@ -48,7 +48,7 @@ class FutureTests: XCTestCase {
     ("testFlatten_InnerFailure", testFlatten_InnerFailure),
     ("testChannelFlatten", testChannelFlatten),
     ("testGroupCompletionFuture", testGroupCompletionFuture),
-    ("testDescription", testDescription),
+    ("testDescription", testDescription)
     ]
 
   func testLifetime() {
@@ -75,36 +75,36 @@ class FutureTests: XCTestCase {
         mappedFutureValue = nil
       }
 
-      queue.asyncAfter(deadline: DispatchTime.now() + .milliseconds(1)) {
-        XCTAssertEqual(result, fixtureResult * 3)
-        XCTAssertNil(weakFuture)
-        XCTAssertNil(weakMappedFuture)
+      queue.sync {
+        // wainting for previus sync to cleanup
+        mysleep(0.0001)
       }
 
-      queue.sync {}
+      XCTAssertEqual(result, fixtureResult * 3)
+      XCTAssertNil(weakFuture)
+      XCTAssertNil(weakMappedFuture)
     }
   }
 
   func testMapLifetime() {
     let qos = pickQoS()
-    
+
     weak var weakFutureValue: Future<Int>?
     weak var weakMappedFuture: Future<String>?
     eval { () -> Void in
       var futureValue: Future<Int>? = future(executor: .queue(qos), after: 1.0) { 1 }
       weakFutureValue = futureValue
-      
-      var mappedFuture: Future<String>? = futureValue!.map {
-        _ in
+
+      var mappedFuture: Future<String>? = futureValue!.map { _ in
         XCTFail()
         return "hello"
       }
       weakMappedFuture = mappedFuture
-      
+
       mappedFuture = nil
       futureValue = nil
     }
-    
+
     XCTAssertNil(weakFutureValue)
     XCTAssertNil(weakMappedFuture)
   }
@@ -114,49 +114,47 @@ class FutureTests: XCTestCase {
     var futureValue: Future<Int>?
     weak var weakMappedFuture: Future<String>?
     eval { () -> Void in
-      futureValue = future(executor: .queue(qos), after: 1.0) { 1 }
-      
-      var mappedFuture: Future<String>? = futureValue!.map(pure: true) {
-        _ in
+      futureValue = future(executor: .queue(qos), after: 0.1) { 1 }
+
+      var mappedFuture: Future<String>? = futureValue!.map(pure: true) { _ in
         XCTFail()
         return "hello"
       }
       weakMappedFuture = mappedFuture
-      
+
       mappedFuture = nil
       futureValue = nil
     }
-    
+
     XCTAssertNil(weakMappedFuture)
     sleep(1)
   }
 
   func testImpureMapLifetime() {
     let qos = pickQoS()
-    let expectation = self.expectation(description: "impure block executed")
     var futureValue: Future<Int>?
     weak var weakMappedFuture: Future<String>?
+    let sema = DispatchSemaphore(value: 0)
+
     eval { () -> Void in
-      futureValue = future(executor: .queue(qos), after: 1.0) { 1 }
-      
-      var mappedFuture: Future<String>? = futureValue!.map(pure: false) {
-        _ in
-        expectation.fulfill()
+      futureValue = future(executor: .queue(qos), after: 0.1) { 1 }
+
+      var mappedFuture: Future<String>? = futureValue!.map(pure: false) { _ in
+        sema.signal()
         return "hello"
       }
       weakMappedFuture = mappedFuture
-      
+
       mappedFuture = nil
       futureValue = nil
     }
-    
+
     XCTAssertNil(weakMappedFuture)
-    self.waitForExpectations(timeout: 1.0)
+    sema.wait()
   }
 
   func testMap_Success() {
-    let transformExpectation = self.expectation(description: "transform called")
-    let qos = pickQoS()
+    let queue = DispatchQueue(label: "aaa")
     weak var weakInitialFuture: Future<Int>?
     let value = pickInt()
     let valueSquared = square(value)
@@ -165,39 +163,34 @@ class FutureTests: XCTestCase {
       let initialFuture = future(success: value)
       weakInitialFuture = initialFuture
       return initialFuture
-        .map(executor: .queue(qos)) {
-          assert(qos: qos)
-          transformExpectation.fulfill()
+        .map(executor: .queue(queue)) {
+          assert(on: queue)
           return try square_success($0)
       }
     }
 
-    self.waitForExpectations(timeout: 0.1)
     let result = mappedFuture.wait()
+    queue.sync { nop() }
     XCTAssertNil(weakInitialFuture)
     XCTAssertEqual(result.success, valueSquared)
   }
 
   func testMap_Failure() {
-    let transformExpectation = self.expectation(description: "transform called")
-    let qos = pickQoS()
+    let queue = DispatchQueue(label: "aaa")
     weak var weakInitialFuture: Future<Int>?
     let value = pickInt()
-//    let valueSquared = square(value)
-
-    let mappedFuture: Future<Int> = eval {
+    let result: Fallible<Int> = eval {
       let initialFuture = future(success: value)
       weakInitialFuture = initialFuture
       return initialFuture
-        .map(executor: .queue(qos)) {
-          assert(qos: qos)
-          transformExpectation.fulfill()
+        .map(executor: .queue(queue)) {
+          assert(on: queue)
           return try square_failure($0)
-      }
+        }
+        .wait()
     }
 
-    self.waitForExpectations(timeout: 0.1)
-    let result = mappedFuture.wait()
+    queue.sync { nop() }
     XCTAssertNil(weakInitialFuture)
     XCTAssertEqual(result.failure as? TestError, .testCode)
   }
@@ -226,6 +219,7 @@ class FutureTests: XCTestCase {
     self.waitForExpectations(timeout: 0.1)
     let result = mappedFuture!.wait()
     mappedFuture = nil
+    actor.internalQueue.sync { nop() }
     XCTAssertNil(weakInitialFuture)
     XCTAssertNil(weakMappedFuture)
     XCTAssertEqual(result.success, valueSquared)
@@ -241,7 +235,7 @@ class FutureTests: XCTestCase {
       let initialFuture = future(success: value)
       weakInitialFuture = initialFuture
       let actor = TestActor()
-      return initialFuture
+      let result: Future<Int> = initialFuture
         .delayed(timeout: 0.1)
         .map(context: actor) { (actor, value) in
           assert(actor: actor)
@@ -249,6 +243,8 @@ class FutureTests: XCTestCase {
 //          transformExpectation.fulfill()
           return try square_success(value)
       }
+      actor.internalQueue.sync { nop() }
+      return result
     }
 
     // self.waitForExpectations(timeout: 1.0)
@@ -258,27 +254,32 @@ class FutureTests: XCTestCase {
   }
 
   func testMapContextual_Failure_ContextAlive() {
-    let actor = TestActor()
-    let transformExpectation = self.expectation(description: "transform called")
-    weak var weakInitialFuture: Future<Int>?
-    let value = pickInt()
-    //let valueSquared = square(value)
+    multiTest(repeating: 1000) {
+      let actor = TestActor()
+      let sema = DispatchSemaphore(value: 0)
+      weak var weakInitialFuture: Future<Int>?
+      let value = pickInt()
 
-    let mappedFuture: Future<Int> = eval {
-      let initialFuture = future(success: value)
-      weakInitialFuture = initialFuture
-      return initialFuture
-        .map(context: actor) { (actor, value) in
-          assert(actor: actor)
-          transformExpectation.fulfill()
-          return try square_failure(value)
+      let result: Fallible<Int> = eval {
+        let initialFuture: Future<Int> = future(success: value)
+        weakInitialFuture = initialFuture
+        let mappedFuture: Future<Int> = initialFuture
+          .map(context: actor) { (actor, value) in
+            assert(actor: actor)
+            sema.signal()
+            return try square_failure(value)
+        }
+
+        sema.wait()
+        let result = mappedFuture.wait()
+        actor.internalQueue.sync { nop() }
+        return result
       }
-    }
 
-    self.waitForExpectations(timeout: 0.1)
-    let result = mappedFuture.wait()
-    XCTAssertNil(weakInitialFuture)
-    XCTAssertEqual(result.failure as? TestError, .testCode)
+      actor.internalQueue.sync { nop() }
+      XCTAssertNil(weakInitialFuture)
+      XCTAssertEqual(result.failure as? TestError, .testCode)
+    }
   }
 
   func testMapContextual_Failure_ContextDead() {
@@ -291,7 +292,7 @@ class FutureTests: XCTestCase {
       let initialFuture = future(success: value)
       weakInitialFuture = initialFuture
       let actor = TestActor()
-      return initialFuture
+      let result: Future<Int> = initialFuture
         .delayed(timeout: 0.1)
         .map(context: actor) { (actor, value) in
           XCTFail()
@@ -299,6 +300,9 @@ class FutureTests: XCTestCase {
           //transformExpectation.fulfill()
           return try square_failure(value)
       }
+
+      actor.internalQueue.sync { nop() }
+      return result
     }
 
     //self.waitForExpectations(timeout: 0.1)
@@ -308,21 +312,21 @@ class FutureTests: XCTestCase {
   }
 
   func testOnCompleteContextual_ContextAlive_RegularActor() {
-    testOnCompleteContextual_ContextAlive(makeActor: TestActor.init)
+    _testOnCompleteContextual_ContextAlive(makeActor: TestActor.init)
   }
 
   func testOnCompleteContextual_ContextAlive_ObjcActor() {
     #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-    testOnCompleteContextual_ContextAlive(makeActor: TestObjCActor.init)
+    _testOnCompleteContextual_ContextAlive(makeActor: TestObjCActor.init)
     #endif
   }
 
-  private func testOnCompleteContextual_ContextAlive<T: Actor>(makeActor: @escaping () -> T) {
+  func _testOnCompleteContextual_ContextAlive<T: Actor>(makeActor: @escaping () -> T) {
     multiTest {
       let actor = makeActor()
       weak var weakInitialFuture: Future<Int>?
       let value = pickInt()
-      
+
       let group = DispatchGroup()
       group.enter()
       DispatchQueue.global().async {
@@ -334,41 +338,46 @@ class FutureTests: XCTestCase {
             assert(actor: actor)
             XCTAssertEqual(value, value_)
             group.leave()
-        }
+          }
+          .onFailure { _ in XCTFail() }
       }
-      
+
       group.wait()
       XCTAssertNil(weakInitialFuture)
     }
   }
 
   func testOnCompleteContextual_ContextDead() {
-    weak var weakInitialFuture: Future<Int>?
-    weak var weakDelayedFuture: Future<Int>?
+    multiTest(repeating: 100) {
+      weak var weakInitialFuture: Future<Int>?
+      weak var weakDelayedFuture: Future<Int>?
+      let sema = DispatchSemaphore(value: 0)
 
-    let expectation = self.expectation(description: "actor gone out of scope")
+      DispatchQueue.global().async {
+        let value = pickInt()
+        var actor: TestActor? = TestActor()
 
-    DispatchQueue.global().async {
-      let value = pickInt()
-      let actor = TestActor()
+        var initialFuture: Future<Int>? = future(success: value)
+        weakInitialFuture = initialFuture
 
-      let initialFuture = future(success: value)
-      weakInitialFuture = initialFuture
+        var delayedFuture: Future<Int>? = initialFuture!.delayed(timeout: 0.1)
+        weakDelayedFuture = delayedFuture
 
-      let delayedFuture = initialFuture.delayed(timeout: 0.1)
-      weakDelayedFuture = delayedFuture
+        delayedFuture!.onComplete(context: actor!) { (actor, _) in
+          XCTFail()
+          assert(actor: actor)
+        }
 
-      delayedFuture.onComplete(context: actor) { (actor, value_) in
-        XCTFail()
-        assert(actor: actor)
+        initialFuture = nil
+        delayedFuture = nil
+        actor = nil
+        sema.signal()
       }
 
-      expectation.fulfill()
+      sema.wait()
+      XCTAssertNil(weakInitialFuture)
+      XCTAssertNil(weakDelayedFuture)
     }
-
-    self.waitForExpectations(timeout: 1.0)
-    XCTAssertNil(weakInitialFuture)
-    XCTAssertNil(weakDelayedFuture)
   }
 
   func testFlatten() {
@@ -386,7 +395,7 @@ class FutureTests: XCTestCase {
       XCTFail("timeout")
     }
   }
-  
+
   func testFlatten_OuterFailure() {
     func fail() throws -> Future<Int> { throw AsyncNinjaError.cancelled }
     let startTime = DispatchTime.now()
@@ -402,7 +411,7 @@ class FutureTests: XCTestCase {
       XCTFail("timeout")
     }
   }
-  
+
   func testFlatten_InnerFailure() {
     func fail() throws -> Future<Int> { throw AsyncNinjaError.cancelled }
     let startTime = DispatchTime.now()
@@ -424,17 +433,17 @@ class FutureTests: XCTestCase {
     let value = pickInt()
     let futureOfChannel = future(after: 0.2) { () -> Channel<String, Int> in
       return channel { (update) -> Int in
-        usleep(50_000)
+        mysleep(0.05)
         update("a")
-        usleep(50_000)
+        mysleep(0.05)
         update("b")
-        usleep(50_000)
+        mysleep(0.05)
         update("c")
-        usleep(50_000)
+        mysleep(0.05)
         update("d")
-        usleep(50_000)
+        mysleep(0.05)
         update("e")
-        usleep(50_000)
+        mysleep(0.05)
         return value
       }
     }
@@ -456,9 +465,9 @@ class FutureTests: XCTestCase {
     group.leave()
 
     let expectation = self.expectation(description: "completion of future")
-    completionFuture.onSuccess {
-      expectation.fulfill()
-    }
+    completionFuture
+      .onSuccess { _ in expectation.fulfill() }
+      .onFailure { _ in XCTFail() }
 
     self.waitForExpectations(timeout: 0.2)
   }

@@ -21,6 +21,9 @@
 //
 
 import Dispatch
+#if os(Linux)
+  import Glibc
+#endif
 
 /// Context indepedent locking. Non-recursive.
 public protocol Locking {
@@ -38,16 +41,47 @@ public extension Locking {
   ///
   /// - Parameter locked: locked function to perform
   /// - Returns: value returned by the locker
-  mutating func locker<T>(_ locked: () throws -> T) rethrows -> T {
+  mutating func locker<Result>(_ locked: () throws -> Result) rethrows -> Result {
     lock()
     defer { unlock() }
     return try locked()
   }
 
+  /// Locks and performs block with one arugment
+  ///
+  /// - Parameter locked: locked function to perform
+  /// - Returns: value returned by the locker
+  mutating func locker<A, Result>(_ a: A, _ locked: (A) throws -> Result) rethrows -> Result {
+    lock()
+    defer { unlock() }
+    return try locked(a)
+  }
+
+  /// Locks and performs block with two arugments
+  ///
+  /// - Parameter locked: locked function to perform
+  /// - Returns: value returned by the locker
+  mutating func locker<A, B, Result>(_ a: A, _ b: B, _ locked: (A, B) throws -> Result) rethrows -> Result {
+    lock()
+    defer { unlock() }
+    return try locked(a, b)
+  }
+
+  /// Locks and performs block with three arugments
+  ///
+  /// - Parameter locked: locked function to perform
+  /// - Returns: value returned by the locker
+  mutating func locker<A, B, C, Result>(_ a: A, _ b: B, _ c: C,
+                                        _ locked: (A, B, C) throws -> Result) rethrows -> Result {
+    lock()
+    defer { unlock() }
+    return try locked(a, b, c)
+  }
+
   /// Locks and performs block
   ///
   /// - Parameter locked: locked function to perform
-  mutating func locker(_ locked: () -> Void) -> Void {
+  mutating func locker(_ locked: () -> Void) {
     lock()
     locked()
     unlock()
@@ -59,29 +93,42 @@ public extension Locking {
 /// - Parameter isFair: determines if locking is fair
 /// - Returns: constructed Locking
 public func makeLocking(isFair: Bool = false) -> Locking {
-  #if os(Linux)
-    return DispatchSemaphore(value: 1)
-  #else
+  #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
     if isFair {
-      return DispatchSemaphore(value: 1)
+      return PThreadLocking()
     } else if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
       return UnfairLockLocking()
     } else {
       return SpinLockLocking()
     }
+  #else
+    return PThreadLocking()
   #endif
 }
 
-extension DispatchSemaphore: Locking {
+class PThreadLocking: Locking {
+
+  private var _lock = pthread_mutex_t()
+
+  init() {
+    var attr = pthread_mutexattr_t()
+    pthread_mutexattr_init(&attr)
+    pthread_mutexattr_settype(&attr, Int32(PTHREAD_MUTEX_NORMAL))
+    pthread_mutex_init(&_lock, &attr)
+  }
+
+  deinit {
+    pthread_mutex_destroy(&_lock)
+  }
 
   /// Locks. Be sure to balance with unlock
   public func lock() {
-    self.wait()
+    pthread_mutex_lock(&_lock)
   }
 
   /// Unlocks. Be sure to balance with lock
   public func unlock() {
-    self.signal()
+    pthread_mutex_unlock(&_lock)
   }
 }
 

@@ -28,10 +28,9 @@ import Dispatch
 #endif
 
 class ChannelTests: XCTestCase {
-  
+
   static let allTests = [
     ("testIterators", testIterators),
-    ("testMakeChannel", testMakeChannel),
     ("testOnValueContextual", testOnValueContextual),
     ("testOnValue", testOnValue),
     ("testBuffering0", testBuffering0),
@@ -40,7 +39,11 @@ class ChannelTests: XCTestCase {
     ("testBuffering3", testBuffering3),
     ("testBuffering10", testBuffering10),
     ("testDescription", testDescription),
-    ("testDoubleBind", testDoubleBind),
+    ("testOverUpdate", testOverUpdate),
+    ("testOverUpdateWithSeqence", testOverUpdateWithSeqence),
+    ("testOverComplete", testOverComplete),
+    ("testStaticCast", testStaticCast),
+    ("testDoubleBind", testDoubleBind)
   ]
 
   func testIterators() {
@@ -61,34 +64,6 @@ class ChannelTests: XCTestCase {
     XCTAssertEqual(iteratorB.success, "finished")
   }
 
-  func testMakeChannel() {
-    let numbers = Array(0..<100)
-
-    let channelA: Channel<Int, String> = channel { (updateUpdate) -> String in
-      for i in numbers {
-        updateUpdate(i)
-      }
-      return "done"
-    }
-
-    var resultNumbers = [Int]()
-    let serialQueue = DispatchQueue(label: "test-queue")
-    let expectation = self.expectation(description: "channel to complete")
-
-    channelA.onUpdate(executor: .queue(serialQueue)) {
-      resultNumbers.append($0)
-    }
-
-    channelA.onSuccess(executor: .queue(serialQueue)) {
-      XCTAssertEqual("done", $0)
-      expectation.fulfill()
-    }
-
-    self.waitForExpectations(timeout: 1.0, handler: nil)
-
-    XCTAssertEqual(resultNumbers, Array(numbers.suffix(resultNumbers.count)))
-  }
-
   func testOnValueContextual() {
     let actor = TestActor()
 
@@ -99,74 +74,69 @@ class ChannelTests: XCTestCase {
     let updatesFixture = pickInts()
     let successValueFixture = "I am working correctly!"
 
-    let successExpectation = self.expectation(description: "success of promise")
+    let sema = DispatchSemaphore(value: 0)
     DispatchQueue.global().async {
       let producer = Producer<Int, String>()
       weakProducer = producer
-      producer.onUpdate(context: actor) { (actor, update) in
+      producer.onUpdate(context: actor) { (_, update) in
         updates.append(update)
       }
 
-      producer.onSuccess(context: actor) { (actor, successValue_) in
+      producer.onSuccess(context: actor) { (_, successValue_) in
         successValue = successValue_
-        successExpectation.fulfill()
+        sema.signal()
       }
 
       DispatchQueue.global().async {
-        guard let producer = weakProducer else {
-          XCTFail()
-          fatalError()
-        }
-        producer.update(updatesFixture)
-        producer.succeed(successValueFixture)
+        weakProducer?.update(updatesFixture)
+        weakProducer?.succeed(successValueFixture)
       }
     }
 
-    self.waitForExpectations(timeout: 0.2, handler: nil)
+    sema.wait()
 
-    XCTAssertNil(weakProducer)
     XCTAssertEqual(updates, updatesFixture)
     XCTAssertEqual(successValue, successValueFixture)
   }
 
   func testOnValue() {
-    var updates = [Int]()
-    var successValue: String? = nil
-    weak var weakProducer: Producer<Int, String>? = nil
+    multiTest(repeating: 100) {
+      var updates = [Int]()
+      var successValue: String? = nil
+      weak var weakProducer: Producer<Int, String>? = nil
 
-    let updatesFixture = pickInts()
-    let successValueFixture = "I am working correctly!"
+      let updatesFixture = pickInts()
+      let successValueFixture = "I am working correctly!"
 
-    let successExpectation = self.expectation(description: "success of promise")
-    let queue = DispatchQueue(label: "testing queue", qos: DispatchQoS(qosClass: pickQoS(), relativePriority: 0))
-
-    DispatchQueue.global().async {
-      let producer = Producer<Int, String>()
-      weakProducer = producer
-      producer.onUpdate(executor: .queue(queue)) { (update) in
-        updates.append(update)
-      }
-
-      producer.onSuccess(executor: .queue(queue)) { (successValue_) in
-        successValue = successValue_
-        successExpectation.fulfill()
-      }
+      let sema = DispatchSemaphore(value: 0)
+      let queue = DispatchQueue(label: "testing queue", qos: DispatchQoS(qosClass: pickQoS(), relativePriority: 0))
 
       DispatchQueue.global().async {
-        guard let producer = weakProducer else {
-          XCTFail()
-          fatalError()
+        let producer = Producer<Int, String>()
+        weakProducer = producer
+        producer.onUpdate(executor: .queue(queue)) { (update) in
+          updates.append(update)
         }
-        producer.update(updatesFixture)
-        producer.succeed(successValueFixture)
+
+        producer.onSuccess(executor: .queue(queue)) { (successValue_) in
+          successValue = successValue_
+          sema.signal()
+        }
+
+        DispatchQueue.global().async {
+          guard let producer = weakProducer else {
+            XCTFail()
+            fatalError()
+          }
+          producer.update(updatesFixture)
+          producer.succeed(successValueFixture)
+        }
       }
+
+      sema.wait()
+      XCTAssertEqual(updates, updatesFixture)
+      XCTAssertEqual(successValue, successValueFixture)
     }
-
-    self.waitForExpectations(timeout: 0.2, handler: nil)
-
-    XCTAssertNil(weakProducer)
-    XCTAssertEqual(updates, updatesFixture)
-    XCTAssertEqual(successValue, successValueFixture)
   }
 
   func testBuffering0() {
@@ -205,12 +175,12 @@ class ChannelTests: XCTestCase {
     updatable.succeed()
 
     let expectation = self.expectation(description: "completion of producer")
-    updatable.onSuccess(executor: .queue(queue)) {
+    updatable.onSuccess(executor: .queue(queue)) { (_) -> Void in
       expectation.fulfill()
     }
-    
+
     self.waitForExpectations(timeout: 1.0, handler: nil)
-    
+
     XCTAssertEqual(updates, fixture, file: file, line: line)
   }
 
@@ -230,6 +200,106 @@ class ChannelTests: XCTestCase {
     let channelD: Channel<Int, String> = Producer(bufferSize: 0)
     XCTAssertEqual("Incomplete Channel", channelD.description)
     XCTAssertEqual("Incomplete Channel<Int, String>", channelD.debugDescription)
+  }
+
+  func testOverUpdate() {
+    let expectation = self.expectation(description: "extraction")
+    let producer = Producer<Int, String>()
+
+    producer.extractAll().onSuccess {
+      XCTAssertEqual($0.updates, [1, 2, 3, 4, 5])
+      XCTAssertEqual($0.completion.success, "Done")
+      expectation.fulfill()
+    }
+
+    producer.update(1)
+    producer.update(2)
+    producer.update(3)
+    producer.update(4)
+    producer.update(5)
+    producer.succeed("Done")
+    producer.update(6)
+    producer.update(7)
+    producer.update(8)
+
+    self.waitForExpectations(timeout: 1.0)
+  }
+
+  func testOverUpdateWithSeqence() {
+    let expectation = self.expectation(description: "extraction")
+    let producer = Producer<Int, String>()
+
+    producer.extractAll().onSuccess {
+      XCTAssertEqual($0.updates, [1, 2, 3, 4, 5])
+      XCTAssertEqual($0.completion.success, "Done")
+      expectation.fulfill()
+    }
+
+    producer.update(1...5)
+    producer.succeed("Done")
+    producer.update(6...8)
+
+    self.waitForExpectations(timeout: 1.0)
+  }
+
+  func testOverComplete() {
+    let expectation = self.expectation(description: "extraction")
+    let producer = Producer<Int, String>()
+
+    producer.extractAll().onSuccess {
+      XCTAssertEqual($0.updates, [1, 2, 3, 4, 5])
+      XCTAssertEqual($0.completion.success, "Done")
+      expectation.fulfill()
+    }
+
+    producer.update(1)
+    producer.update(2)
+    producer.update(3)
+    producer.update(4)
+    producer.update(5)
+    producer.succeed("Done")
+    producer.update(6)
+    producer.update(7)
+    producer.update(8)
+    producer.succeed("Done 2")
+
+    self.waitForExpectations(timeout: 1.0)
+  }
+
+  func testStaticCast() {
+    let a = Producer<Any, Any>()
+    let b: Channel<Int, String> = a.staticCast()
+    let c: Future<String> = a.staticCast()
+    let sema = DispatchSemaphore(value: 0)
+
+    b.extractAll().onSuccess {
+      let (bUpdate, bCompletion) = $0
+      XCTAssertEqual(bUpdate, [1, 2, 3, 4, 5])
+      if case let .success(value) = bCompletion {
+        XCTAssertEqual("success", value)
+      } else {
+        XCTFail()
+      }
+      sema.signal()
+    }
+
+    c.onSuccess {
+      XCTAssertEqual("success", $0)
+      sema.signal()
+    }
+
+    a.makeFuture().onSuccess {
+      XCTAssertEqual("success", $0 as! String)
+      sema.signal()
+    }
+
+    (1...5).forEach(a.update)
+    a.succeed("success")
+    (6...8).forEach(a.update)
+
+    sema.wait()
+    sema.wait()
+    sema.wait()
   }
 
   func testDoubleBind() {
@@ -259,7 +329,7 @@ class ChannelTests: XCTestCase {
   }
 }
 
-fileprivate class DoubleBindTestActor<T>: TestActor {
+private class DoubleBindTestActor<T>: TestActor {
   var dynamicValue: DynamicProperty<T> { return _dynamicValue }
   var value: T {
     get { return _dynamicValue.value }

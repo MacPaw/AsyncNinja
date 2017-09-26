@@ -22,23 +22,35 @@
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
   import Foundation
-  
+
   public extension Executor {
-    
+
     /// makes an `Executor` from `OperationQueue`
     ///
     /// - Parameters:
-    ///   - queue: an `OperationQueue` to make executor from
+    ///   - operationQueue: an `OperationQueue` to make executor from
     ///   - isStrictAsync: `true` if the `Executor` must execute blocks strictly asynchronously.
     ///     `false` will relax requirements to increase performance
     /// - Returns: constructed `Executor`
     static func operationQueue(
-      _ queue: OperationQueue,
+      _ operationQueue: OperationQueue,
       isStrictAsync: Bool = false
-      ) -> Executor
-    {
-      return Executor(relaxAsyncWhenLaunchingFrom: isStrictAsync ? nil : ObjectIdentifier(queue),
-                      handler: queue.addOperation)
+      ) -> Executor {
+      return Executor(operationQueue: operationQueue, isStrictAsync: isStrictAsync)
+    }
+
+    /// initializes an `Executor` with `OperationQueue`
+    ///
+    /// - Parameters:
+    ///   - operationQueue: an `OperationQueue` to make executor from
+    ///   - isStrictAsync: `true` if the `Executor` must execute blocks strictly asynchronously.
+    ///     `false` will relax requirements to increase performance
+    /// - Returns: constructed `Executor`
+    init(
+      operationQueue: OperationQueue,
+      isStrictAsync: Bool = false) {
+      self.init(relaxAsyncWhenLaunchingFrom: isStrictAsync ? nil : ObjectIdentifier(operationQueue),
+                handler: operationQueue.addOperation)
     }
   }
 
@@ -101,7 +113,7 @@
     /// - Parameters:
     ///   - cancellationToken: `CancellationToken` to use.
     ///     Keep default value of the argument unless you need
-    ///     an extended cancellation options of returned channel
+    ///     an extended cancellation options of returned primitive
     ///   - bufferSize: `DerivedChannelBufferSize` of derived channel.
     ///     Keep default value of the argument unless you need
     ///     an extended buffering options of returned channel
@@ -121,25 +133,40 @@
 
     /// Returns channel of distinct update values of original channel.
     /// Works only for collections of NSObjects values
-    /// [[objectA], [objectA], [objectA, objectB], [objectA, objectB, objectC], [objectA, objectB, objectC], [objectA]] => [[objectA], [objectA, objectB], [objectA, objectB, objectC], [objectA]]
+    /// ```swift
+    /// [
+    ///   [objectA],
+    ///   [objectA],
+    ///   [objectA, objectB],
+    ///   [objectA, objectB, objectC],
+    ///   [objectA, objectB, objectC], [objectA]
+    /// ] => [
+    ///   [objectA],
+    ///   [objectA, objectB],
+    ///   [objectA, objectB, objectC], [objectA]
+    /// ]
+    /// ```
     ///
     /// - Parameters:
     ///   - cancellationToken: `CancellationToken` to use.
     ///     Keep default value of the argument unless you need
-    ///     an extended cancellation options of returned channel
+    ///     an extended cancellation options of returned primitive
     ///   - bufferSize: `DerivedChannelBufferSize` of derived channel.
     ///     Keep default value of the argument unless you need
     ///     an extended buffering options of returned channel
     /// - Returns: channel with distinct update values
-    public func distinctCollectionOfNSObjects(cancellationToken: CancellationToken? = nil,
-                                              bufferSize: DerivedChannelBufferSize = .default
+    public func distinctCollectionOfNSObjects(
+      cancellationToken: CancellationToken? = nil,
+      bufferSize: DerivedChannelBufferSize = .default
       ) -> Channel<Update, Success> {
-
       // Test: EventSource_TransformTests.testDistinctArrayOfNSObjects
-      return distinct(cancellationToken: cancellationToken, bufferSize: bufferSize) {
-        return $0.count == $1.count
-          && !zip($0, $1).contains { !$0.isEqual($1) }
+
+      func isEqual(lhs: Update, rhs: Update) -> Bool {
+        return lhs.count == rhs.count
+          && !zip(lhs, rhs).contains { !$0.0.isEqual($0.1) }
       }
+
+      return distinct(cancellationToken: cancellationToken, bufferSize: bufferSize, isEqual: isEqual)
     }
   }
 
@@ -149,43 +176,57 @@
   ///   - majorStream: a stream to bind to. This stream has a priority during initial synchronization
   ///   - minorStream: a stream to bind to.
   ///   - valueTransformer: `ValueTransformer` to use to transform from T.Update to U.Update and reverse
-  public func doubleBind<T: EventSource&EventsDestination, U: EventSource&EventsDestination>(
+  public func doubleBind<T: EventSource&EventDestination, U: EventSource&EventDestination>(
     _ majorStream: T,
     _ minorStream: U,
-    valueTransformer: ValueTransformer)
-  {
+    valueTransformer: ValueTransformer) {
     doubleBind(majorStream,
                transform: { valueTransformer.transformedValue($0) as! U.Update },
                minorStream,
                reverseTransform: { valueTransformer.reverseTransformedValue($0) as! T.Update })
   }
-  
+
 #endif
 
 #if os(macOS) || os(iOS)
-  
+
   import WebKit
-  
+
   // MARK: - reactive properties for WKWebView
   public extension ReactiveProperties where Object: WKWebView {
 
-    /// An `Sink` that refers to write-only `WKWebView.load(_:)`
-    var loadRequest: Sink<URLRequest, Void> { return sink { $0.load($1) } }
-    
-    /// An `Sink` that refers to write-only `WKWebView.loadFileURL(_:, allowingReadAccessTo:)`
+    /// `Sink` that refers to write-only `WKWebView.load(_:)`
+    var loadRequest: Sink<URLRequest, Void> {
+      func setter(webView: WKWebView, request: URLRequest) {
+        webView.load(request)
+      }
+      return sink(setter: setter)
+    }
+
+    /// `Sink` that refers to write-only `WKWebView.loadFileURL(_:, allowingReadAccessTo:)`
     @available(OSX 10.11, iOS 9, *)
     var loadFileURL: Sink<(url: URL, readAccessURL: URL), Void> {
-      return sink { $0.loadFileURL($1.url, allowingReadAccessTo: $1.readAccessURL) }
+      func setter(webView: WKWebView, values: (url: URL, readAccessURL: URL)) {
+        webView.loadFileURL(values.url, allowingReadAccessTo: values.readAccessURL)
+      }
+      return sink(setter: setter)
     }
-    
-    /// An `Sink` that refers to write-only `WKWebView.loadHTMLString(_:, baseURL:)`
-    var loadHTMLString: Sink<(string: String, baseURL: URL?), Void> { return sink { $0.loadHTMLString($1.string, baseURL: $1.baseURL) } }
-    
-    /// An `Sink` that refers to write-only `load(_:, mimeType:, characterEncodingName:, baseURL:)`
+
+    /// `Sink` that refers to write-only `WKWebView.loadHTMLString(_:, baseURL:)`
+    var loadHTMLString: Sink<(string: String, baseURL: URL?), Void> {
+      func setter(webView: WKWebView, values: (string: String, baseURL: URL?)) {
+        webView.loadHTMLString(values.string, baseURL: values.baseURL)
+      }
+      return sink(setter: setter)
+    }
+
+    /// `Sink` that refers to write-only `load(_:, mimeType:, characterEncodingName:, baseURL:)`
     @available(OSX 10.11, iOS 9, *)
     var loadData: Sink<(data: Data, mimeType: String, characterEncodingName: String, baseURL: URL), Void> {
-      return sink { $0.load($1.data, mimeType: $1.mimeType, characterEncodingName: $1.characterEncodingName, baseURL: $1.baseURL) }
+      return sink {
+        $0.load($1.data, mimeType: $1.mimeType, characterEncodingName: $1.characterEncodingName, baseURL: $1.baseURL)
+      }
     }
   }
-  
+
 #endif

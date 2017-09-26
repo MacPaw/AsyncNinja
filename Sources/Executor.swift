@@ -25,7 +25,7 @@ import Dispatch
 /// Executor encapsulates asynchrounous way of execution escaped block.
 public struct Executor {
   /// Handler that encapsulates asynchrounous way of execution escaped block
-  public typealias Handler = (@escaping (Void) -> Void) -> Void
+  public typealias Handler = (@escaping () -> Void) -> Void
   private let _impl: ExecutorImpl
   var dispatchQueueBasedExecutor: Executor {
     switch _impl.asyncNinja_representedDispatchQueue {
@@ -66,7 +66,7 @@ public struct Executor {
       _impl.asyncNinja_canImmediatelyExecute(from: original._impl) {
       block(original)
     } else {
-      _impl.asyncNinja_execute { block(self) }
+      _impl.asyncNinja_execute { () -> Void in block(self) }
     }
   }
 
@@ -76,7 +76,7 @@ public struct Executor {
   ///   - timeout: to schedule execution of the block after
   ///   - block: to execute
   func execute(after timeout: Double, _ block: @escaping (_ original: Executor) -> Void) {
-    _impl.asyncNinja_execute(after: timeout) { block(self) }
+    _impl.asyncNinja_execute(after: timeout) { () -> Void in block(self) }
   }
 }
 
@@ -121,7 +121,14 @@ public extension Executor {
   /// - Returns: executor
   static func queue(_ queue: DispatchQueue) -> Executor {
     // Test: ExecutorTests.testCustomQueue
-    return Executor(impl: queue)
+    return Executor(queue: queue)
+  }
+
+  /// initializes executor based on specified queue
+  ///
+  /// - Parameter queue: to execute submitted blocks on
+  init(queue: DispatchQueue) {
+    self.init(impl: queue)
   }
 
   // Test: ExecutorTests.testCustomQoS
@@ -130,19 +137,26 @@ public extension Executor {
   /// - Parameter qos: quality of service for submitted blocks
   /// - Returns: executor
   static func queue(_ qos: DispatchQoS.QoSClass) -> Executor {
-    return Executor.queue(.global(qos: qos))
+    return Executor(qos: qos)
+  }
+
+  /// initializes executor based on global queue with specified QoS class
+  ///
+  /// - Parameter qos: quality of service for submitted blocks
+  init(qos: DispatchQoS.QoSClass) {
+    self.init(queue: .global(qos: qos))
   }
 }
 
-// MARK: implementations
+// MARK: - implementations
 
 /// **internal use only**
 protocol ExecutorImpl: class {
   var asyncNinja_representedDispatchQueue: DispatchQueue? { get }
   var asyncNinja_canImmediatelyExecuteOnPrimaryExecutor: Bool { get }
 
-  func asyncNinja_execute(_ block: @escaping (Void) -> Void)
-  func asyncNinja_execute(after timeout: Double, _ block: @escaping (Void) -> Void)
+  func asyncNinja_execute(_ block: @escaping () -> Void)
+  func asyncNinja_execute(after timeout: Double, _ block: @escaping () -> Void)
   func asyncNinja_canImmediatelyExecute(from impl: ExecutorImpl) -> Bool
 }
 
@@ -152,13 +166,13 @@ private class PrimaryExecutorImpl: ExecutorImpl {
   var asyncNinja_representedDispatchQueue: DispatchQueue? { return queue }
   var asyncNinja_canImmediatelyExecuteOnPrimaryExecutor: Bool { return true }
 
-  func asyncNinja_execute(_ block: @escaping (Void) -> Void) {
-    queue.async(execute: block)
+  func asyncNinja_execute(_ block: @escaping () -> Void) {
+    queue.async { block() }
   }
 
-  func asyncNinja_execute(after timeout: Double, _ block: @escaping (Void) -> Void) {
+  func asyncNinja_execute(after timeout: Double, _ block: @escaping () -> Void) {
     let wallDeadline = DispatchWallTime.now().adding(seconds: timeout)
-    queue.asyncAfter(wallDeadline: wallDeadline, execute: block)
+    queue.asyncAfter(wallDeadline: wallDeadline) { block() }
   }
 
   func asyncNinja_canImmediatelyExecute(from impl: ExecutorImpl) -> Bool {
@@ -172,11 +186,11 @@ private class MainExecutorImpl: ExecutorImpl {
   var asyncNinja_representedDispatchQueue: DispatchQueue? { return queue }
   var asyncNinja_canImmediatelyExecuteOnPrimaryExecutor: Bool { return true }
 
-  func asyncNinja_execute(_ block: @escaping (Void) -> Void) {
+  func asyncNinja_execute(_ block: @escaping () -> Void) {
     queue.async(execute: block)
   }
 
-  func asyncNinja_execute(after timeout: Double, _ block: @escaping (Void) -> Void) {
+  func asyncNinja_execute(after timeout: Double, _ block: @escaping () -> Void) {
     let wallDeadline = DispatchWallTime.now().adding(seconds: timeout)
     queue.asyncAfter(wallDeadline: wallDeadline, execute: block)
   }
@@ -186,15 +200,15 @@ private class MainExecutorImpl: ExecutorImpl {
   }
 }
 
-fileprivate class ImmediateExecutorImpl: ExecutorImpl {
+private class ImmediateExecutorImpl: ExecutorImpl {
   var asyncNinja_representedDispatchQueue: DispatchQueue? { return nil }
   var asyncNinja_canImmediatelyExecuteOnPrimaryExecutor: Bool { return true }
 
-  func asyncNinja_execute(_ block: @escaping (Void) -> Void) {
+  func asyncNinja_execute(_ block: @escaping () -> Void) {
     block()
   }
 
-  func asyncNinja_execute(after timeout: Double, _ block: @escaping (Void) -> Void) {
+  func asyncNinja_execute(after timeout: Double, _ block: @escaping () -> Void) {
     let deadline = DispatchWallTime.now().adding(seconds: timeout)
     DispatchQueue.global(qos: .default).asyncAfter(wallDeadline: deadline) {
       block()
@@ -206,8 +220,8 @@ fileprivate class ImmediateExecutorImpl: ExecutorImpl {
   }
 }
 
-fileprivate class HandlerBasedExecutorImpl: ExecutorImpl {
-  public typealias Handler = (@escaping (Void) -> Void) -> Void
+private class HandlerBasedExecutorImpl: ExecutorImpl {
+  public typealias Handler = (@escaping () -> Void) -> Void
   private let _handler: Handler
   private let _relaxAsyncWhenLaunchingFrom: ObjectIdentifier?
 
@@ -219,11 +233,11 @@ fileprivate class HandlerBasedExecutorImpl: ExecutorImpl {
     _handler = handler
   }
 
-  func asyncNinja_execute(_ block: @escaping (Void) -> Void) {
+  func asyncNinja_execute(_ block: @escaping () -> Void) {
     _handler(block)
   }
 
-  func asyncNinja_execute(after timeout: Double, _ block: @escaping (Void) -> Void) {
+  func asyncNinja_execute(after timeout: Double, _ block: @escaping () -> Void) {
     let deadline = DispatchWallTime.now().adding(seconds: timeout)
     DispatchQueue.global(qos: .default).asyncAfter(wallDeadline: deadline) {
       self.asyncNinja_execute(block)

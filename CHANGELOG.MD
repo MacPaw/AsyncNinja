@@ -1,3 +1,42 @@
+# 1.2.1
+* [changed] `DispatchSemaphore`-based fair locking replaced with `pthread_mutex_t`-based locking
+* [improved] code style improved with [SwiftLint](https://github.com/realm/SwiftLint) (once again)
+
+# 1.2.0
+* [changed] lock-free implementation of `Future` and `CancellationToken` changed to regular locking-based
+* [fixed] multiple Xcode 9.0 beta 5 compile time issues
+
+# 1.1.3
+* [added] documentation generation infrastructure
+* [added] primitive subscription chaining (`future.onSuccess { /* handle success */ }.onFailure { /* handle failure */ }`)
+* [improved] parallel CI jobs
+* [improved] `Promise` internals updated
+* [fixed] warnings and erros introduced by Swift 4 toolchain
+
+# 1.1.2
+* [improved] compile time
+* [improved] code style improved with [SwiftLint](https://github.com/realm/SwiftLint)
+
+# 1.1.1
+* [added] network reachability
+* [improved] travis-ci config
+* [fixed] potential leak of handlers in `Promise`
+* [fixed] EventSource.first
+* [fixed] EventSource.last
+* [fixed] multiple flaky unit tests
+
+# 1.1.0
+* try execute methods added. They provide an ability to retry async execution multiple times
+* convenience initializers for `Executor` added alongside with constructors to reduce confusion in some cases
+* EventSource.skip implemented
+* EventSource.take implemented
+* EventSource.contains implemented
+* EventSource.suspendable implemented
+
+# 1.0.0
+* better test coverage
+* `CancellationToken` fixed and improved
+
 # 1.0.0-beta7
 * `staticCast` for `Future` and `Channel` added
 * future to channel and channel to future transformations added

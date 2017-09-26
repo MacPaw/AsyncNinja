@@ -75,14 +75,18 @@ extension XCTestCase {
           }
         }
 
-        let _ = group.wait(timeout: DispatchTime.now() + .seconds(10))
+        _ = group.wait(timeout: DispatchTime.now() + .seconds(10))
       }
     }
   }
 }
 
-fileprivate struct Constants {
-  static let availableQosClassses: [DispatchQoS.QoSClass] = [/*.background, .utility, */.default, .userInitiated, .userInteractive, ]
+private struct Constants {
+  static let availableQosClassses: [DispatchQoS.QoSClass] = [
+    .default,
+    .userInitiated,
+    .userInteractive
+  ]
 }
 
 func pickQoS() -> DispatchQoS.QoSClass {
@@ -105,6 +109,17 @@ func pickInt(max: Int = 100) -> Int {
 
 func eval<Result>(_ body: () throws -> Result) rethrows -> Result {
   return try body()
+}
+
+func mysleep(_ duration: Double) {
+  #if true
+    usleep(UInt32(duration * 1_000_000))
+  #else
+    let (seconds, fraction) = modf(duration)
+    var requestedTime = timespec(tv_sec: Int(seconds), tv_nsec: Int(fraction * 1_000_000_000))
+    var remainingTime = timespec()
+    assert(0 == nanosleep(&requestedTime, &remainingTime))
+  #endif
 }
 
 enum TestError: Error {

@@ -24,83 +24,65 @@ import Dispatch
 
 /// An object that allows to implement and control cancellation
 public class CancellationToken: Cancellable {
-  private var _container = makeThreadSafeContainer()
+  public typealias NotifyBlock = () -> Void
+  private let _isBackCancelAllowed: Bool
+  private var _locking = makeLocking()
+  private var _items: [CancellationTokenItem]? = []
+  private var _isCancelled: Bool { return self._items.isNone }
 
   /// Returns state of the object
-  public var isCancelled: Bool { return _container.head is CancelledItem }
+  public var isCancelled: Bool {
+    return _locking.locker(self) { $0._isCancelled }
+  }
 
-  /// Designated initializer. Initializes uncancelled token
-  public init() { }
+  /// Designated initializer
+  ///
+  /// - Parameter isBackCancelAllowed: true if cancellation of cancellables
+  ///   after cancellation of the token is allowed. True by default
+  public init(isBackCancelAllowed: Bool = true) {
+    _isBackCancelAllowed = isBackCancelAllowed
+  }
+
+  private func add(item: CancellationTokenItem) {
+    let shouldCancel = _locking.locker(self, item) { (self_, item) -> Bool in
+      if self_._isCancelled {
+        return self_._isBackCancelAllowed
+      }
+
+      self_._items?.append(item)
+      return false
+    }
+
+    if shouldCancel {
+      item.cancel()
+    }
+  }
 
   /// Adds block to notify when state changes to cancelled
   /// Specified block will never be called if the token will never be cancelled
-  public func notifyCancellation(_ block: @escaping () -> Void) {
-    _container.updateHead {
-      if let nonCancelledItem = $0 as? NonCancelledItem {
-        return NotifyItem(block: block, next: nonCancelledItem)
-      } else {
-        return $0
-      }
-    }
+  public func notifyCancellation(_ block: @escaping NotifyBlock) {
+    add(item: NotifyBlockCancellationTokenItem(block: block))
   }
 
   /// Automatically cancelles passed cancellable object on cancellation
   public func add(cancellable: Cancellable) {
-    _container.updateHead {
-      if let nonCancelledItem = $0 as? NonCancelledItem {
-        return ContainerOfCancellableItem(cancellable: cancellable, next: nonCancelledItem)
-      } else {
-        return $0
-      }
-    }
+    add(item: CancellableContainerCancellationTokenItem(cancellable: cancellable))
   }
 
   /// Manually cancelles all attached items
   public func cancel() {
-    _container.updateHead { _ in
-      return CancelledItem()
+    let items = _locking.locker(self) { (self_) -> [CancellationTokenItem]? in
+      let oldItems = self_._items
+      self_._items = nil
+      return oldItems
+    }
+
+    if let items = items {
+      for item in items {
+        item.cancel()
+      }
     }
   }
-
-  private class Item {
-    init() { }
-  }
-
-  private class NonCancelledItem: Item {
-    let next: NonCancelledItem?
-
-    init(next: NonCancelledItem?) {
-      self.next = next
-    }
-  }
-
-  private class NotifyItem: NonCancelledItem {
-    let _block: () -> Void
-
-    init(block: @escaping () -> Void, next: NonCancelledItem?) {
-      _block = block
-      super.init(next: next)
-    }
-
-    deinit {
-      _block()
-    }
-  }
-
-  private class ContainerOfCancellableItem: NonCancelledItem {
-    weak var _cancellable: Cancellable?
-
-    init(cancellable: Cancellable, next: NonCancelledItem?) {
-      _cancellable = cancellable
-      super.init(next: next)
-    }
-
-    deinit {
-      _cancellable?.cancel()
-    }
-  }
-
-  private class CancelledItem: Item { }
 }
 
 /// Protocol for objects that have cancellation
@@ -108,4 +90,32 @@ public protocol Cancellable: class {
 
   /// Performs cancellation action
   func cancel()
+}
+
+private protocol CancellationTokenItem {
+  func cancel()
+}
+
+private class NotifyBlockCancellationTokenItem: CancellationTokenItem {
+  let _block: CancellationToken.NotifyBlock
+
+  init(block: @escaping CancellationToken.NotifyBlock) {
+    _block = block
+  }
+
+  func cancel() {
+    _block()
+  }
+}
+
+private class CancellableContainerCancellationTokenItem: CancellationTokenItem {
+  weak var _cancellable: Cancellable?
+
+  init(cancellable: Cancellable) {
+    _cancellable = cancellable
+  }
+
+  func cancel() {
+    _cancellable?.cancel()
+  }
 }

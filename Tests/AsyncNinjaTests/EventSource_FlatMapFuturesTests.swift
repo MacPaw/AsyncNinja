@@ -28,44 +28,36 @@ import Dispatch
 #endif
 
 class EventSource_FlatMapFuturesTests: XCTestCase {
-  
+
   static let allTests = [
     ("testFlatMapFutures_KeepUnordered", testFlatMapFutures_KeepUnordered),
     ("testFlatMapFutures_KeepLatestTransform", testFlatMapFutures_KeepLatestTransform),
     ("testFlatMapFutures_DropResultsOutOfOrder", testFlatMapFutures_DropResultsOutOfOrder),
     ("testFlatMapFutures_OrderResults", testFlatMapFutures_OrderResults),
-    ("testFlatMapFutures_TransformSerially", testFlatMapFutures_TransformSerially),
+    ("testFlatMapFutures_TransformSerially", testFlatMapFutures_TransformSerially)
   ]
 
-  func _testFlatMapFutures(behavior: ChannelFlatteningBehavior, expectedResults: [String],
-                          file: StaticString = #file, line: UInt = #line) {
+  func _testFlatMapFutures(
+    behavior: ChannelFlatteningBehavior,
+    expectedResults: [String],
+    file: StaticString = #file,
+    line: UInt = #line
+    ) {
     let producerA = Producer<(duration: Double, name: String), String>()
     let qos = pickQoS()
-    let channelB = producerA.flatMap(executor: .queue(qos), behavior: behavior) { (duration, name) -> Future<String> in
+    let channelB = producerA.flatMap(executor: .queue(qos), behavior: behavior) { (update) -> Future<String> in
       assert(qos: qos)
-      return future(after: duration) {
-        return "t(\(name))"
+      return future(after: update.duration) {
+        return "t(\(update.name))"
       }
     }
 
     let zipped = zip(expectedResults, channelB)
     DispatchQueue.global().async {
-      let sema = DispatchSemaphore(value: 0)
-      producerA.update((duration: 0.1, name: "x"))
-      let _ = sema.wait(timeout: DispatchTime.now() + .milliseconds(10))
-      sema.signal()
-
-      producerA.update((duration: 0.3, name: "y"))
-      let _ = sema.wait(timeout: DispatchTime.now() + .milliseconds(10))
-      sema.signal()
-
-      producerA.update((duration: 0.2, name: "z"))
-      let _ = sema.wait(timeout: DispatchTime.now() + .milliseconds(10))
-      sema.signal()
-
-      producerA.update((duration: 0.5, name: "done"))
-      let _ = sema.wait(timeout: DispatchTime.now() + .milliseconds(10))
-      sema.signal()
+      producerA.update((duration: 0.2, name: "x"))
+      producerA.update((duration: 0.8, name: "y"))
+      producerA.update((duration: 0.4, name: "z"))
+      producerA.update((duration: 1.0, name: "done"))
     }
 
     var count = 0

@@ -28,7 +28,11 @@ import XCTest
     return [
       testCase(BatchFutureTests.allTests),
       testCase(CachableValueTests.allTests),
+      testCase(ChannelMakersTests.allTests),
+      testCase(CancellationTokenTests.allTests),
+      testCase(CacheTests.allTests),
       testCase(ChannelTests.allTests),
+      testCase(EitherTests.allTests),
       testCase(EventSource_CombineTests.allTests),
       testCase(EventSource_FlatMapFuturesTests.allTests),
       testCase(EventSource_MapTests.allTests),
@@ -42,11 +46,13 @@ import XCTest
       testCase(FallibleTests.allTests),
       testCase(Future_MakersTests.allTests),
       testCase(FutureTests.allTests),
-      // these tests take too much time and do not give enough feedback
-      // testCase(PerformanceTests.allTests),
+      testCase(PerformanceTests.allTests),
+      testCase(OptionalAdaptorTests.allTests),
       testCase(ReleasePoolTests.allTests),
+      testCase(SinglyLinkedListTests.allTests),
       testCase(TimerChannelTests.allTests),
-      testCase(ZipFuturesTest.allTests),
+      testCase(TryExecuteTests.allTests),
+      testCase(ZipFuturesTest.allTests)
     ]
   }
 #endif

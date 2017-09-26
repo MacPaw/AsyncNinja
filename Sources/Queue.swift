@@ -20,121 +20,38 @@
 //  IN THE SOFTWARE.
 //
 
-import Dispatch
+typealias Queue<Element> = Queue_<SinglyLinkedListStrongElementNode<Element>>
+typealias QueueOfWeakElements<T: AnyObject> = Queue_<SinglyLinkedListWeakElementNode<T>>
 
-typealias Queue<Element> = QueueImpl<QueueStrongElementWrapper<Element>>
-typealias QueueOfWeakElements<Element: AnyObject> = QueueImpl<QueueWeakElementWrapper<Element>>
+struct Queue_<Node: SinglyLinkedListElementNode>: SinglyLinkedListBased, Sequence {
+  typealias Iterator = SinglyLinkedListIterator<Node>
+  var _impl: SinglyLinkedListImpl<Node>
 
-class QueueImpl<Wrapper: QueueElementWrapper>: Sequence {
-  typealias Iterator = QueueIterator<Wrapper>
-  typealias Element = Wrapper.Element
-
-  private var _first: Wrapper? = nil
-  private var _last: Wrapper? = nil
-  private(set) var count = 0
-  var first: Element? { return _first?.element }
-  var last: Element? { return _last?.element }
-  var isEmpty: Bool { return nil == _first }
-
-  init() { }
+  init() {
+    _impl = SinglyLinkedListImpl()
+  }
 
   func makeIterator() -> Iterator {
-    return Iterator(queueElementWrapper: _first)
+    return _impl.makeIterator()
   }
 
-  func push(_ element: Element) {
-    let new = Wrapper(element: element)
-    if let last = _last {
-      last.next = new
-    } else {
-      _first = new
-    }
-    _last = new
-    self.count += 1
-  }
-
-  func pop() -> Element? {
-    guard let first = _first else { return nil }
-    if let next = first.next {
-      _first = next
-    } else {
-      _first = nil
-      _last = nil
+  mutating func push(_ element: Node.Element) {
+    if !isKnownUniquelyReferenced(&_impl) {
+      _impl = SinglyLinkedListImpl(proto: _impl)
     }
 
-    self.count -= 1
-    return first.element
+    _impl.pushBack(element)
   }
 
-  func removeAll() {
-    _first = nil
-    _last = nil
-    self.count = 0
-  }
-
-  func clone() -> QueueImpl<Wrapper> {
-    let result = QueueImpl<Wrapper>()
-    self.forEach(result.push)
-    return result
-  }
-
-  func forEach(andReset: Bool = false, _ block: (Wrapper.Element) -> Void) {
-    var wrapper_ = _first
-    if andReset {
-      _first = nil
-      _last = nil
-      self.count = 0
+  mutating func push<S: Sequence>(_ elements: S) where S.Iterator.Element == Iterator.Element {
+    if !isKnownUniquelyReferenced(&_impl) {
+      _impl = SinglyLinkedListImpl(proto: _impl)
     }
-    while let wrapper = wrapper_ {
-      if let element = wrapper.element {
-        block(element)
-      }
-      wrapper_ = wrapper.next
-    }
-  }
-}
 
-protocol QueueElementWrapper: class {
-  associatedtype Element
-
-  var element: Element? { get }
-  var next: Self? { get set }
-
-  init(element: Element)
-}
-
-final class QueueStrongElementWrapper<Element>: QueueElementWrapper {
-  let element: Element?
-  var next: QueueStrongElementWrapper<Element>?
-
-  required init(element: Element) {
-    self.element = element
-  }
-}
-
-final class QueueWeakElementWrapper<Element: AnyObject>: QueueElementWrapper {
-  private weak var _element: Element?
-  var element: Element? { return _element }
-  var next: QueueWeakElementWrapper<Element>?
-
-  required init(element: Element) {
-    _element = element
-  }
-}
-
-struct QueueIterator<Wrapper: QueueElementWrapper>: IteratorProtocol {
-  private var _queueElementWrapper: Wrapper?
-
-  init(queueElementWrapper: Wrapper?) {
-    _queueElementWrapper = queueElementWrapper
+    _impl.pushBack(elements)
   }
 
-  mutating func next() -> Wrapper.Element? {
-    if let wrapper = _queueElementWrapper {
-      _queueElementWrapper = wrapper.next
-      return wrapper.element
-    } else {
-      return nil
-    }
+  func forEach(_ body: (Node.Element) throws -> Void) rethrows {
+    try _impl.forEach(body)
   }
 }

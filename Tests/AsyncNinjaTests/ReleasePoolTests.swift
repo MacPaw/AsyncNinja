@@ -30,7 +30,7 @@ import Dispatch
 class ReleasePoolTests: XCTestCase {
   static let allTests = [
     ("testSequential", testSequential),
-    ("testConcurrent", testConcurrent),
+    ("testConcurrent", testConcurrent)
     ]
 
   func testSequential() {
@@ -66,8 +66,9 @@ class ReleasePoolTests: XCTestCase {
 
     let group = DispatchGroup()
     boxes.enumerated()
-      .map { ($1, queues[$0 % queues.count]) }
-      .forEach { (box, queue) in
+      .map { ($0.1, queues[$0.0 % queues.count]) }
+      .forEach { (element) in
+        let (box, queue) = element
         queue.async(group: group) { releasePool.insert(box) }
     }
     boxes.removeAll(keepingCapacity: false)
@@ -85,14 +86,14 @@ class ReleasePoolTests: XCTestCase {
   }
 }
 
-fileprivate class Box<T> {
+private class Box<T> {
   let value: T
   init(_ value: T) {
     self.value = value
   }
 }
 
-fileprivate class WeakBox<T: AnyObject> {
+private class WeakBox<T: AnyObject> {
   weak var value: T?
   init(_ value: T) {
     self.value = value

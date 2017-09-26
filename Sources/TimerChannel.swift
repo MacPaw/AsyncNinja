@@ -63,38 +63,73 @@ public struct TimerSpec {
   /// - Returns: DispatchSourceTimer
   public func makeTimer(queue: DispatchQueue) -> DispatchSourceTimer {
     let timer = DispatchSource.makeTimerSource(queue: queue)
-    switch deadline {
-    case let .walltime(deadline):
-      switch interval {
-      case let .dispatch(interval):
-        if let leeway = leeway {
-          timer.scheduleRepeating(wallDeadline: deadline, interval: interval, leeway: leeway)
-        } else {
-          timer.scheduleRepeating(wallDeadline: deadline, interval: interval)
+    #if swift(>=4.0)
+      switch deadline {
+      case let .walltime(deadline):
+        switch interval {
+        case let .dispatch(interval):
+          if let leeway = leeway {
+            timer.schedule(wallDeadline: deadline, repeating: interval, leeway: leeway)
+          } else {
+            timer.schedule(wallDeadline: deadline, repeating: interval)
+          }
+        case let .seconds(interval):
+          if let leeway = leeway {
+            timer.schedule(wallDeadline: deadline, repeating: interval, leeway: leeway)
+          } else {
+            timer.schedule(wallDeadline: deadline, repeating: interval)
+          }
         }
-      case let .seconds(interval):
-        if let leeway = leeway {
-          timer.scheduleRepeating(wallDeadline: deadline, interval: interval, leeway: leeway)
-        } else {
-          timer.scheduleRepeating(wallDeadline: deadline, interval: interval)
+      case let .time(deadline):
+        switch interval {
+        case let .dispatch(interval):
+          if let leeway = leeway {
+            timer.schedule(deadline: deadline, repeating: interval, leeway: leeway)
+          } else {
+            timer.schedule(deadline: deadline, repeating: interval)
+          }
+        case let .seconds(interval):
+          if let leeway = leeway {
+            timer.schedule(deadline: deadline, repeating: interval, leeway: leeway)
+          } else {
+            timer.schedule(deadline: deadline, repeating: interval)
+          }
         }
       }
-    case let .time(deadline):
-      switch interval {
-      case let .dispatch(interval):
-        if let leeway = leeway {
-          timer.scheduleRepeating(deadline: deadline, interval: interval, leeway: leeway)
-        } else {
-          timer.scheduleRepeating(deadline: deadline, interval: interval)
+    #else
+      switch deadline {
+      case let .walltime(deadline):
+        switch interval {
+        case let .dispatch(interval):
+          if let leeway = leeway {
+            timer.scheduleRepeating(wallDeadline: deadline, interval: interval, leeway: leeway)
+          } else {
+            timer.scheduleRepeating(wallDeadline: deadline, interval: interval)
+          }
+        case let .seconds(interval):
+          if let leeway = leeway {
+            timer.scheduleRepeating(wallDeadline: deadline, interval: interval, leeway: leeway)
+          } else {
+            timer.scheduleRepeating(wallDeadline: deadline, interval: interval)
+          }
         }
-      case let .seconds(interval):
-        if let leeway = leeway {
-          timer.scheduleRepeating(deadline: deadline, interval: interval, leeway: leeway)
-        } else {
-          timer.scheduleRepeating(deadline: deadline, interval: interval)
+      case let .time(deadline):
+        switch interval {
+        case let .dispatch(interval):
+          if let leeway = leeway {
+            timer.scheduleRepeating(deadline: deadline, interval: interval, leeway: leeway)
+          } else {
+            timer.scheduleRepeating(deadline: deadline, interval: interval)
+          }
+        case let .seconds(interval):
+          if let leeway = leeway {
+            timer.scheduleRepeating(deadline: deadline, interval: interval, leeway: leeway)
+          } else {
+            timer.scheduleRepeating(deadline: deadline, interval: interval)
+          }
         }
       }
-    }
+    #endif
 
     #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
       cancellationToken?.notifyCancellation { [weak timer] in
@@ -129,13 +164,11 @@ public struct TimerSpec {
     timer.setEventHandler { [weak producer] in
       if case .some = executor.representedDispatchQueue {
         guard case .some = producer else { return }
-        do { producer?.update(try maker(), from: executor) }
-        catch { producer?.fail(error) }
+        do { producer?.update(try maker(), from: executor) } catch { producer?.fail(error) }
       } else {
         executor.execute(from: queueExecutor) { (originalExecutor) in
           guard case .some = producer else { return }
-          do { producer?.update(try maker(), from: originalExecutor) }
-          catch { producer?.fail(error) }
+          do { producer?.update(try maker(), from: originalExecutor) } catch { producer?.fail(error) }
         }
       }
     }
@@ -157,8 +190,7 @@ public func makeTimer(
   executor: Executor = .primary,
   interval: Double,
   cancellationToken: CancellationToken? = nil
-  ) -> Channel<Void, Void>
-{
+  ) -> Channel<Void, Void> {
   return TimerSpec(deadline: .time(.now()),
                    interval: .seconds(interval),
                    leeway: nil,
@@ -177,8 +209,7 @@ public func makeTimer<T>(
   interval: Double,
   cancellationToken: CancellationToken? = nil,
   _ maker:  @escaping () throws -> T
-  ) -> Channel<T, Void>
-{
+  ) -> Channel<T, Void> {
   return TimerSpec(deadline: .time(.now()),
                    interval: .seconds(interval),
                    leeway: nil,
