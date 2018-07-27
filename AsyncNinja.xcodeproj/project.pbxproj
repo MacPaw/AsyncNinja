@@ -417,7 +417,7 @@
 		OBJ_1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 9999;
+				LastUpgradeCheck = 0940;
 				TargetAttributes = {
 					OBJ_149 = {
 						LastSwiftMigration = 0900;
