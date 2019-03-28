@@ -31,7 +31,11 @@ class ChannelMakersTests: XCTestCase {
 
   static let allTests = [
     ("testMakeChannel", testMakeChannel),
+    ("testMakeChannel2", testMakeChannel2),
     ("testMakeChannelContextual", testMakeChannelContextual),
+    ("testMakeChannelWithProducerProvidingBlock", testMakeChannelWithProducerProvidingBlock),
+    ("testMakeChannelWithProducerProvidingBlockWithDeadContext",
+     testMakeChannelWithProducerProvidingBlockWithDeadContext),
     ("testCompletedWithFunc", testCompletedWithFunc),
     ("testCompletedWithStatic", testCompletedWithStatic),
     ("testSucceededWithFunc", testSucceededWithFunc),
@@ -70,6 +74,39 @@ class ChannelMakersTests: XCTestCase {
     XCTAssertEqual(resultNumbers, Array(numbers.suffix(resultNumbers.count)))
   }
 
+  func testMakeChannel2() {
+    let numbers = Array(0..<100)
+
+    let channelA: Channel<Int, String> = channel { (update, complete) in
+      DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
+        for i in numbers {
+          update(i)
+        }
+        complete(.success("done"))
+      }
+    }
+
+    var resultNumbers = [Int]()
+    let serialQueue = DispatchQueue(label: "test-queue")
+    let expectation = self.expectation(description: "channel to complete")
+
+    channelA.onUpdate(executor: .queue(serialQueue)) {
+      assert(on: serialQueue)
+      resultNumbers.append($0)
+    }
+
+    channelA.onSuccess(executor: .queue(serialQueue)) {
+      assert(on: serialQueue)
+      XCTAssertEqual("done", $0)
+      expectation.fulfill()
+    }
+
+    self.waitForExpectations(timeout: 2.0, handler: nil)
+
+    XCTAssertEqual(resultNumbers, numbers)
+    XCTAssertEqual(channelA.completion?.maybeSuccess, "done")
+  }
+
   func testMakeChannelContextual() {
     multiTest(repeating: 100) {
       let numbers = Array(0..<10)
@@ -103,6 +140,67 @@ class ChannelMakersTests: XCTestCase {
       sema.wait()
       XCTAssertEqual(resultNumbers, Array(numbers.suffix(resultNumbers.count)))
     }
+  }
+
+  func testMakeChannelWithProducerProvidingBlock() {
+    let producerFinalizedExpectation = expectation(description: "producer finalized")
+    let updateDeliveredExpectation = expectation(description: "update delivered")
+    let completionDeliveredExpectation = expectation(description: "completion delivered")
+
+    var testedChannel: Channel<String, Int>? = channel(executor: .default) { (producer: Producer<String, Int>)  in
+      assert(qos: .default)
+      producer.update("update")
+      producer._asyncNinja_notifyFinalization {
+        producerFinalizedExpectation.fulfill()
+      }
+      producer.succeed(42)
+    }
+
+    testedChannel!
+      .onUpdate(executor: .userInitiated) {
+        XCTAssertEqual($0, "update")
+        updateDeliveredExpectation.fulfill()
+      }
+      .onComplete(executor: .userInitiated) {
+        XCTAssertEqual($0.maybeSuccess!, 42)
+        completionDeliveredExpectation.fulfill()
+    }
+
+    weak var weakTestedChannel = testedChannel
+    testedChannel = nil
+    waitForExpectations(timeout: 1, handler: nil)
+    XCTAssertNil(weakTestedChannel)
+  }
+
+  func testMakeChannelWithProducerProvidingBlockWithDeadContext() {
+    let producerFinalizedExpectation = expectation(description: "producer finalized")
+    let updateDeliveredExpectation = expectation(description: "update delivered")
+    let completionDeliveredExpectation = expectation(description: "completion delivered")
+
+    var context: TestActor? = TestActor()
+    var testedChannel: Channel<String, Int>? = channel(context: context!
+    ) { (_, producer: Producer<String, Int>)  in
+      producer.update("update")
+      producer._asyncNinja_notifyFinalization {
+        producerFinalizedExpectation.fulfill()
+      }
+    }
+
+    testedChannel!
+      .onUpdate(executor: .userInitiated) {
+        XCTAssertEqual($0, "update")
+        updateDeliveredExpectation.fulfill()
+      }
+      .onComplete {
+        XCTAssertEqual($0.maybeFailure as! AsyncNinjaError, .contextDeallocated)
+        completionDeliveredExpectation.fulfill()
+    }
+
+    context = nil
+    weak var weakTestedChannel = testedChannel
+    testedChannel = nil
+    waitForExpectations(timeout: 1, handler: nil)
+    XCTAssertNil(weakTestedChannel)
   }
 
   func testCompletedWithFunc() {

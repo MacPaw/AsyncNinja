@@ -1,3 +1,17 @@
+# 1.4.0
+* [improved] support of Swift 5.0
+* [changed] `Fallible` type is a typedef to `Result` for Swift 5.0
+* [added] `Channel` convenience constructors
+* [added] a few reactive properties for AppKit
+* [fixed] `DynamicProperty` storage synchronization
+* [fixed] bindings memory issue
+
+# 1.3.2
+* [changed] default Swift version has been updated to 4.2. 4.0-4.1 is dropped due to changes in UIKit enums naming
+* [improvement] tested against latest Swift 5.0 build. No errors, no warnings, tests are passing
+* [improvement] annoying warnings fixed
+* [improvement] minor improvements of documentation
+
 # 1.3.1
 * [fixes] nested executes using the same executor `Executor` could be optimized into on-stack execution instead of dispatch_async call. That is a direct cause of stack overflow. Avoiding that by limiting amount of nested on-stack executions.
 

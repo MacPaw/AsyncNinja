@@ -31,7 +31,7 @@ public func channel<Update, Success>(
   ) -> Channel<Update, Success> {
   // TEST: ChannelMakersTests.testMakeChannel
 
-  let producer = Producer<Update, Success>(bufferSize: AsyncNinjaConstants.defaultChannelBufferSize)
+  let producer = Producer<Update, Success>(bufferSize: bufferSize)
   cancellationToken?.add(cancellable: producer)
   executor.execute(
     from: nil
@@ -44,17 +44,69 @@ public func channel<Update, Success>(
   return producer
 }
 
+func _producer<Update, Success>(
+  cancellationToken: CancellationToken?,
+  bufferSize: Int,
+  block: (@escaping (Update) -> Void, @escaping (Fallible<Success>) -> Void) -> Void
+  ) -> Producer<Update, Success> {
+
+  let producer = Producer<Update, Success>(bufferSize: bufferSize)
+  cancellationToken?.add(cancellable: producer)
+
+  let weakProducerBox = WeakBox(producer)
+  func update(_ update: Update) {
+    weakProducerBox.value?.update(update)
+  }
+
+  func complete(_ completion: Fallible<Success>) {
+    weakProducerBox.value?.complete(completion)
+  }
+
+  block(update, complete)
+  return producer
+}
+
+/// Convenience constructor of Channel. Encapsulates cancellation and producer creation.
+public func channel<Update, Success>(
+  cancellationToken: CancellationToken? = nil,
+  bufferSize: Int = AsyncNinjaConstants.defaultChannelBufferSize,
+  block: (@escaping (Update) -> Void, @escaping (Fallible<Success>) -> Void) -> Void
+  ) -> Channel<Update, Success> {
+
+  // TEST: ChannelMakersTests.testMakeChannel2
+  return _producer(cancellationToken: cancellationToken,
+                   bufferSize: bufferSize,
+                   block: block)
+}
+
+/// Convenience constructor of Channel. Encapsulates cancellation and producer creation.
+public func channel<C: ExecutionContext, Update, Success>(
+  context: C,
+  cancellationToken: CancellationToken? = nil,
+  bufferSize: Int = AsyncNinjaConstants.defaultChannelBufferSize,
+  _ block: (C, @escaping (Update) -> Void, @escaping (Fallible<Success>) -> Void) -> Void
+  ) -> Channel<Update, Success> {
+
+  let producer = _producer(cancellationToken: cancellationToken,
+                           bufferSize: bufferSize
+  ) { (update, complete) in
+    block(context, update, complete)
+  }
+  context.addDependent(cancellable: producer)
+  return producer
+}
+
 /// Convenience contextual constructor of Channel. Encapsulates cancellation and producer creation.
-public func channel<U: ExecutionContext, Update, Success>(
-  context: U,
+public func channel<C: ExecutionContext, Update, Success>(
+  context: C,
   executor: Executor? = nil,
   cancellationToken: CancellationToken? = nil,
   bufferSize: Int = AsyncNinjaConstants.defaultChannelBufferSize,
-  block: @escaping (_ strongContext: U, _ update: @escaping (Update) -> Void) throws -> Success
+  block: @escaping (_ strongContext: C, _ update: @escaping (Update) -> Void) throws -> Success
   ) -> Channel<Update, Success> {
   // TEST: ChannelMakersTests.testMakeChannelContextual
 
-  let producer = Producer<Update, Success>(bufferSize: AsyncNinjaConstants.defaultChannelBufferSize)
+  let producer = Producer<Update, Success>(bufferSize: bufferSize)
   context.addDependent(completable: producer)
   cancellationToken?.add(cancellable: producer)
   (executor ?? context.executor).execute(
@@ -106,6 +158,51 @@ public func channel<C: Collection, Success>(
 
   return channel(updates: updates, completion: .failure(failure))
 }
+
+// MARK: -
+/// Convenience constructor of Channel
+/// Gives an access to an underlying Producer to a provided block
+public func channel<Update, Success>(
+  executor: Executor = .immediate,
+  cancellationToken: CancellationToken? = nil,
+  bufferSize: Int = AsyncNinjaConstants.defaultChannelBufferSize,
+  block: @escaping (_ producer: Producer<Update, Success>) throws -> Void
+  ) -> Channel<Update, Success> {
+  // TEST: ChannelMakersTests.testMakeChannelWithProducerProvidingBlock
+
+  let producer = Producer<Update, Success>(bufferSize: bufferSize)
+  cancellationToken?.add(cancellable: producer)
+  executor.execute(from: nil) { (originalExecutor) in
+    do {
+      try block(producer)
+    } catch {
+      producer.fail(error, from: originalExecutor)
+    }
+  }
+  return producer
+}
+
+/// Convenience constructor of Channel
+/// Gives an access to an underlying Producer to a provided block
+public func channel<C: ExecutionContext, Update, Success>(
+  context: C,
+  executor: Executor? = nil,
+  cancellationToken: CancellationToken? = nil,
+  bufferSize: Int = AsyncNinjaConstants.defaultChannelBufferSize,
+  block: @escaping (_ context: C, _ strongProducer: Producer<Update, Success>) throws -> Void
+  ) -> Channel<Update, Success> {
+  // TEST: ChannelMakersTests.testMakeChannelWithProducerProvidingBlockWithDeadContext
+
+  return channel(executor: executor ?? context.executor,
+                 cancellationToken: cancellationToken,
+                 bufferSize: bufferSize
+  ) { (producer: Producer<Update, Success>) in
+    context.addDependent(completable: producer)
+    try block(context, producer)
+  }
+}
+
+// MARK: -
 
 /// Convenience shortcuts for making completed channel
 public extension Channel {

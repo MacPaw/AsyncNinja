@@ -101,13 +101,12 @@ class Future_MakersTests: XCTestCase {
   }
 
   func testMakeFutureOfDelayedFallibleBlock_Failure() {
-    let qos = pickQoS()
     let value = pickInt()
     let expectation = self.expectation(description: "block called")
     let startTime = DispatchTime.now()
 
-    let futureValue = future(executor: .queue(qos), after: 0.2) { () -> Int in
-      assert(qos: qos)
+    let futureValue = future(executor: .default, after: 0.2) { () -> Int in
+      assert(qos: .default)
       let finishTime = DispatchTime.now()
       XCTAssert(startTime + 0.2 < finishTime)
       XCTAssert(startTime + 0.4 > finishTime)
@@ -115,7 +114,7 @@ class Future_MakersTests: XCTestCase {
       return try square_failure(value)
     }
 
-    mysleep(0.15)
+    mysleep(0.1)
     XCTAssertNil(futureValue.value)
 
     self.waitForExpectations(timeout: 0.5)
@@ -140,7 +139,8 @@ class Future_MakersTests: XCTestCase {
   func testMakeFutureOfContextualFallibleBlock_Success_ContextDead() {
     let value = pickInt()
 
-    var futureValue: Future<Int>? = nil
+    var futureValue: Future<Int>?
+    let sema = DispatchSemaphore(value: 0)
     DispatchQueue.global().async {
       let actor = TestActor()
       actor.internalQueue.async {
@@ -151,10 +151,12 @@ class Future_MakersTests: XCTestCase {
         assert(actor: actor)
         return try square_success(value)
       }
+      sema.signal()
     }
 
+    sema.wait()
     mysleep(0.1)
-    XCTAssertEqual(futureValue?.failure as? AsyncNinjaError, AsyncNinjaError.contextDeallocated)
+    XCTAssertEqual(futureValue?.wait().maybeFailure as? AsyncNinjaError, AsyncNinjaError.contextDeallocated)
   }
 
   func testMakeFutureOfContextualFallibleBlock_Failure_ContextAlive() {
@@ -179,8 +181,9 @@ class Future_MakersTests: XCTestCase {
   func testMakeFutureOfContextualFallibleBlock_Failure_ContextDead() {
     let value = pickInt()
 
-    var futureValue: Future<Int>? = nil
+    var futureValue: Future<Int>?
 
+    let sema = DispatchSemaphore(value: 0)
     DispatchQueue.global().async {
       let actor = TestActor()
       actor.internalQueue.async {
@@ -191,8 +194,10 @@ class Future_MakersTests: XCTestCase {
         assert(actor: actor)
         return try square_failure(value)
       }
+      sema.signal()
     }
 
+    sema.wait()
     mysleep(0.1)
     XCTAssertEqual(futureValue?.failure as? AsyncNinjaError, AsyncNinjaError.contextDeallocated)
   }
@@ -202,16 +207,15 @@ class Future_MakersTests: XCTestCase {
     let value = pickInt()
     let expectation = self.expectation(description: "block called")
 
-    let futureValue = future(context: actor, after: 1.0) { (actor) -> Int in
+    let start = Date()
+    let futureValue = future(context: actor, after: 0.2) { (actor) -> Int in
+      XCTAssert((0.15...0.4).contains(-start.timeIntervalSinceNow))
       assert(actor: actor)
       expectation.fulfill()
       return try square_success(value)
     }
 
-    mysleep(0.5)
-    XCTAssertNil(futureValue.value)
-
-    self.waitForExpectations(timeout: 2.0)
+    waitForExpectations(timeout: 1.0)
     XCTAssertEqual(futureValue.success, square(value))
   }
 
@@ -219,17 +223,17 @@ class Future_MakersTests: XCTestCase {
     var actor: TestActor? = TestActor()
     let value = pickInt()
 
-    let futureValue = future(context: actor!, after: 0.2) { (actor) -> Int in
+    let futureValue = future(context: actor!, after: 0.5) { (actor) -> Int in
       XCTFail()
       assert(actor: actor)
       return try square_success(value)
     }
 
-    mysleep(0.15)
+    mysleep(0.2)
     XCTAssertNil(futureValue.value)
     actor = nil
 
-    mysleep(0.25)
+    mysleep(1.0)
     XCTAssertEqual(futureValue.failure as? AsyncNinjaError, AsyncNinjaError.contextDeallocated)
   }
 
@@ -253,16 +257,15 @@ class Future_MakersTests: XCTestCase {
     let value = pickInt()
     let expectation = self.expectation(description: "block called")
 
+    let start = Date()
     let futureValue = future(context: actor, after: 0.2) { (actor) -> Int in
+      XCTAssert((0.15...0.4).contains(-start.timeIntervalSinceNow))
       assert(actor: actor)
       expectation.fulfill()
       return try square_failure(value)
     }
 
-    mysleep(0.15)
-    XCTAssertNil(futureValue.value)
-
-    self.waitForExpectations(timeout: 0.3)
+    self.waitForExpectations(timeout: 1.0)
     XCTAssertEqual(futureValue.failure as? TestError, TestError.testCode)
   }
 
@@ -280,7 +283,7 @@ class Future_MakersTests: XCTestCase {
     XCTAssertNil(futureValue.value)
     actor = nil
 
-    XCTAssertEqual(futureValue.wait(seconds: 0.5)?.failure as? AsyncNinjaError, AsyncNinjaError.contextDeallocated)
+    XCTAssertEqual(futureValue.wait(seconds: 0.5)?.maybeFailure as? AsyncNinjaError, AsyncNinjaError.contextDeallocated)
   }
 
   func testMakeFutureOfDelayedContextualFallibleBlock_Failure_EarlyContextDead() {

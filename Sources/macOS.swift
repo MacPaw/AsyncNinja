@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2016-2017 Anton Mironov
+//  Copyright (c) 2016-2019 Anton Mironov
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"),
@@ -84,5 +84,61 @@
       self.producer.update(update, from: .main)
     }
   }
+
+// MARK: - reactive properties for NSView
+public extension ReactiveProperties where Object: NSView {
+  /// `ProducerProxy` that refers to read-write property `NSView.alphaValue`
+  var alphaValue: ProducerProxy<CGFloat, Void> { return updatable(forKeyPath: "alphaValue", onNone: .drop) }
+
+  /// `ProducerProxy` that refers to read-write property `NSView.isHidden`
+  var isHidden: ProducerProxy<Bool, Void> { return updatable(forKeyPath: "hidden", onNone: .drop) }
+
+  /// `ProducerProxy` that refers to read-write property `NSView.isOpaque`
+  var isOpaque: ProducerProxy<Bool, Void> { return updatable(forKeyPath: "opaque", onNone: .drop) }
+}
+
+// MARK: - reactive properties for NSControl
+public extension ReactiveProperties where Object: NSControl {
+  var isEnabled: ProducerProxy<Bool, Void> { return updatable(forKeyPath: "enabled", onNone: .drop) }
+
+  /// `ProducerProxy` that refers to read-write property `NSControl.objectValue`
+  var objectValue: ProducerProxy<Any?, Void> {
+    return anyUpdatable(forBindingName: .value, initialValue: object.objectValue)
+  }
+
+  /// `ProducerProxy` that refers to read-write property `NSControl.stringValue`
+  var stringValue: ProducerProxy<String?, Void> {
+    return updatable(forBindingName: .value, initialValue: object.stringValue)
+  }
+
+  /// `ProducerProxy` that refers to read-write property `NSControl.attributedStringValue`
+  var attributedStringValue: ProducerProxy<NSAttributedString?, Void> {
+    return updatable(forBindingName: .value, initialValue: object.attributedStringValue)
+  }
+
+  /// `Channel` that refers to read-write property `NSControl.integerValue`
+  var integerValue: ProducerProxy<Int?, Void> {
+    return updatable(forBindingName: .value,
+                     initialValue: object.integerValue,
+                     transformer: { ($0 as? NSNumber)?.intValue ?? ($0 as? Int) },
+                     reveseTransformer: { $0.map(NSNumber.init(integerLiteral:)) })
+  }
+
+  /// `Channel` that refers to read-write property `NSControl.floatValue`
+  var floatValue: ProducerProxy<Float?, Void> {
+    return updatable(forBindingName: .value,
+                     initialValue: object.floatValue,
+                     transformer: { ($0 as? NSNumber)?.floatValue ?? ($0 as? Float) },
+                     reveseTransformer: { $0.map(NSNumber.init(value:)) })
+  }
+
+  /// `Channel` that refers to read-write property `NSControl.floatValue`
+  var doubleValue: ProducerProxy<Double?, Void> {
+    return updatable(forBindingName: .value,
+                     initialValue: object.doubleValue,
+                     transformer: { ($0 as? NSNumber)?.doubleValue ?? ($0 as? Double) },
+                     reveseTransformer: { $0.map(NSNumber.init(value:)) })
+  }
+}
 
 #endif

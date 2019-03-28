@@ -18,6 +18,10 @@
 		B8B520261EBF3287006C27DA /* Sequence_AsyncReduce.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B520251EBF3287006C27DA /* Sequence_AsyncReduce.swift */; };
 		B8C99AC31F5C742000E16257 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C99AC21F5C742000E16257 /* Box.swift */; };
 		B8DC12851ED093CF0099893A /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8DC12831ED093C60099893A /* PerformanceTests.swift */; };
+		F812B7A421DEDC4E00571A07 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = F812B7A321DEDC4E00571A07 /* Debug.swift */; };
+		F812B7A621DEE6DC00571A07 /* appleOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F812B7A521DEE6DC00571A07 /* appleOSTests.swift */; };
+		F812B7A821DEE91200571A07 /* macOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F812B7A721DEE91200571A07 /* macOSTests.swift */; };
+		F812B7AC21E0E78C00571A07 /* macOS_BindingsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F812B7AA21E0E5CE00571A07 /* macOS_BindingsProxy.swift */; };
 		F819DC181E8A9F2A0072E0B1 /* Either.swift in Sources */ = {isa = PBXBuildFile; fileRef = F819DC171E8A9F2A0072E0B1 /* Either.swift */; };
 		F81A3EB51EA232DE009B0144 /* OptionalAdaptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81A3EB41EA232DE009B0144 /* OptionalAdaptorTests.swift */; };
 		F8419BD41E90FCB60067701C /* CancellationTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8419BD31E90FCB60067701C /* CancellationTokenTests.swift */; };
@@ -127,6 +131,10 @@
 		B8B520251EBF3287006C27DA /* Sequence_AsyncReduce.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence_AsyncReduce.swift; sourceTree = "<group>"; };
 		B8C99AC21F5C742000E16257 /* Box.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		B8DC12831ED093C60099893A /* PerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
+		F812B7A321DEDC4E00571A07 /* Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
+		F812B7A521DEE6DC00571A07 /* appleOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleOSTests.swift; sourceTree = "<group>"; };
+		F812B7A721DEE91200571A07 /* macOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macOSTests.swift; sourceTree = "<group>"; };
+		F812B7AA21E0E5CE00571A07 /* macOS_BindingsProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macOS_BindingsProxy.swift; sourceTree = "<group>"; };
 		F819DC171E8A9F2A0072E0B1 /* Either.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Either.swift; sourceTree = "<group>"; };
 		F81A3EB41EA232DE009B0144 /* OptionalAdaptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalAdaptorTests.swift; sourceTree = "<group>"; };
 		F8419BD31E90FCB60067701C /* CancellationTokenTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationTokenTests.swift; sourceTree = "<group>"; };
@@ -258,6 +266,7 @@
 		OBJ_62 /* AsyncNinjaTests */ = {
 			isa = PBXGroup;
 			children = (
+				F812B7A521DEE6DC00571A07 /* appleOSTests.swift */,
 				OBJ_63 /* BatchFutureTests.swift */,
 				OBJ_64 /* CachableValueTests.swift */,
 				F8419BD91E913B580067701C /* CacheTests.swift */,
@@ -280,6 +289,7 @@
 				OBJ_77 /* Future_MakersTests.swift */,
 				OBJ_78 /* FutureTests.swift */,
 				OBJ_79 /* iOSTests.swift */,
+				F812B7A721DEE91200571A07 /* macOSTests.swift */,
 				OBJ_80 /* ObserversTests.swift */,
 				F81A3EB41EA232DE009B0144 /* OptionalAdaptorTests.swift */,
 				B8DC12831ED093C60099893A /* PerformanceTests.swift */,
@@ -318,6 +328,7 @@
 				OBJ_24 /* Completing_Transform.swift */,
 				OBJ_25 /* ConstantFuture.swift */,
 				OBJ_26 /* Dispatch_Extensions.swift */,
+				F812B7A321DEDC4E00571A07 /* Debug.swift */,
 				OBJ_27 /* DynamicProperty.swift */,
 				F819DC171E8A9F2A0072E0B1 /* Either.swift */,
 				OBJ_28 /* EventSource_Combine.swift */,
@@ -341,6 +352,7 @@
 				OBJ_43 /* KeyProtocols.swift */,
 				OBJ_44 /* Locking.swift */,
 				OBJ_45 /* macOS.swift */,
+				F812B7AA21E0E5CE00571A07 /* macOS_BindingsProxy.swift */,
 				OBJ_46 /* MergeFutures.swift */,
 				F87E09211E9C337F006CD1C9 /* NetworkReachability.swift */,
 				OBJ_47 /* OptionalAdaptor.swift */,
@@ -420,10 +432,10 @@
 				LastUpgradeCheck = 1010;
 				TargetAttributes = {
 					OBJ_149 = {
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1020;
 					};
 					OBJ_90 = {
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -481,6 +493,7 @@
 				OBJ_162 /* EventSource_ToFutureTests.swift in Sources */,
 				OBJ_163 /* EventSource_TransformTests.swift in Sources */,
 				OBJ_164 /* EventSource_Zip2Tests.swift in Sources */,
+				F812B7A621DEE6DC00571A07 /* appleOSTests.swift in Sources */,
 				OBJ_165 /* ExecutionContextTests.swift in Sources */,
 				F86BE0641E983E20008B7BDC /* TryExecuteTests.swift in Sources */,
 				OBJ_166 /* ExecutorTests.swift in Sources */,
@@ -491,6 +504,7 @@
 				OBJ_169 /* FutureTests.swift in Sources */,
 				F8419BD41E90FCB60067701C /* CancellationTokenTests.swift in Sources */,
 				OBJ_170 /* iOSTests.swift in Sources */,
+				F812B7A821DEE91200571A07 /* macOSTests.swift in Sources */,
 				OBJ_171 /* ObserversTests.swift in Sources */,
 				F88DBFF81EC3A3B700FC589E /* Fixtures.swift in Sources */,
 				OBJ_172 /* ReleasePoolTests.swift in Sources */,
@@ -519,6 +533,7 @@
 				OBJ_105 /* Cache.swift in Sources */,
 				OBJ_106 /* CancellationToken.swift in Sources */,
 				OBJ_107 /* Channel.swift in Sources */,
+				F812B7A421DEDC4E00571A07 /* Debug.swift in Sources */,
 				OBJ_108 /* Channel_makers.swift in Sources */,
 				F87E09221E9C337F006CD1C9 /* NetworkReachability.swift in Sources */,
 				B8B520221EBF2918006C27DA /* EventSource_Debounce.swift in Sources */,
@@ -529,6 +544,7 @@
 				OBJ_111 /* Completing_Transform.swift in Sources */,
 				OBJ_112 /* ConstantFuture.swift in Sources */,
 				OBJ_113 /* Dispatch_Extensions.swift in Sources */,
+				F812B7AC21E0E78C00571A07 /* macOS_BindingsProxy.swift in Sources */,
 				OBJ_114 /* DynamicProperty.swift in Sources */,
 				OBJ_115 /* EventSource_Combine.swift in Sources */,
 				OBJ_116 /* EventSource_FlatMapFutures.swift in Sources */,
@@ -764,7 +780,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				USE_HEADERMAP = NO;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
@@ -788,7 +804,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				USE_HEADERMAP = NO;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;

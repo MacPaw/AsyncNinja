@@ -26,7 +26,7 @@
   import UIKit
   @testable import AsyncNinja
 
-  class iOSTests: XCTestCase {
+  class iOSTests: appleOSTests {
     static let allTests = [
       ("testUIView", testUIView),
       ("testUIControl", testUIControl),
@@ -82,8 +82,7 @@
 
     func testUITextField() {
       let object = UITextField()
-      let defaultTextAttributes: [NSAttributedStringKey: Any] = Dictionary(uniqueKeysWithValues:
-        object.defaultTextAttributes.map { (NSAttributedStringKey($0.key), $0.value) })
+      let defaultTextAttributes = object.defaultTextAttributes
       let attributedStringsFixtures = Fixtures.strings
         .map { NSAttributedString(string: $0, attributes: defaultTextAttributes) }
       testEventStream(object.rp.text,
@@ -346,7 +345,7 @@
       #if os(iOS)
         let object = UIDatePicker()
 
-        let datePickerModeFixtures: [UIDatePickerMode] = [
+        let datePickerModeFixtures: [UIDatePicker.Mode] = [
           .time, .time, .date, .date, .dateAndTime, .countDownTimer, .countDownTimer, .dateAndTime
         ]
         testEventStream(object.rp.datePickerMode,
@@ -465,7 +464,7 @@
     }
 
     #if os(iOS)
-    func _testUISlider(_ object: UISlider, state: UIControlState) {
+    func _testUISlider(_ object: UISlider, state: UIControl.State) {
       testOptionalEventDestination(object.rp.thumbImage(for: state), object: object,
                                    keyPathOrGet: .right({ $0.thumbImage(for: state) }),
                                    values: Fixtures.imagesAndNils)
@@ -523,141 +522,4 @@
                               values: Fixtures.stringsAndNils)
     }
   }
-
-  // MARK: - T: Equatable
-  extension iOSTests {
-    func testEventStream<T: EventDestination&EventSource, Object: NSObject>(
-      _ stream: T,
-      object: Object,
-      keyPathOrGetSet: Either<String, (getter: (Object) -> T.Update?, setter: (Object, T.Update?) -> Void)>,
-      values: [T.Update],
-      file: StaticString = #file,
-      line: UInt = #line
-      ) where T.Update: Equatable {
-      testEventDestination(stream, object: object, keyPathOrGet: keyPathOrGetSet.mapRight { $0.getter },
-                           values: values, file: file, line: line)
-      testEventSource(stream, object: object, keyPathOrSet: keyPathOrGetSet.mapRight { $0.setter },
-                      values: values, file: file, line: line)
-    }
-
-    func testEventDestination<T: EventDestination, Object: NSObject>(
-      _ EventDestination: T,
-      object: Object,
-      keyPathOrGet: Either<String, (Object) -> T.Update?>,
-      values: [T.Update],
-      file: StaticString = #file,
-      line: UInt = #line
-      ) where T.Update: Equatable {
-      for value in values {
-        EventDestination.update(value, from: .main)
-        let objectValue: T.Update? = eval {
-          switch keyPathOrGet {
-          case let .left(keyPath):
-            return object.value(forKeyPath: keyPath) as? T.Update
-          case let .right(getter):
-            return getter(object)
-          }
-        }
-        XCTAssertEqual(objectValue, value, file: file, line: line)
-      }
-    }
-
-    func testEventSource<T: EventSource, Object: NSObject>(
-      _ EventSource: T,
-      object: Object,
-      keyPathOrSet: Either<String, (Object, T.Update?) -> Void>,
-      values: [T.Update],
-      file: StaticString = #file,
-      line: UInt = #line
-      ) where T.Update: Equatable {
-      var updatingIterator = EventSource.makeIterator()
-      _ = updatingIterator.next() // skip an initial value
-      for value in values {
-        switch keyPathOrSet {
-        case let .left(keyPath):
-          object.setValue(value, forKeyPath: keyPath)
-        case let .right(setter):
-          setter(object, value)
-        }
-
-        XCTAssertEqual(updatingIterator.next() as! T.Update?, value, file: file, line: line)
-      }
-    }
-
-  }
-
-  // MARK: - T: Optional<Equatable>
-  extension iOSTests {
-    func testOptionalEventStream<T: EventDestination&EventSource, Object: NSObject>(
-      _ stream: T,
-      object: Object,
-      keyPathOrGetSet: Either<String, (getter: (Object) -> T.Update?, setter: (Object, T.Update?) -> Void)>,
-      values: [T.Update],
-      file: StaticString = #file,
-      line: UInt = #line
-      ) where T.Update: AsyncNinjaOptionalAdaptor,
-      T.Update.AsyncNinjaWrapped: Equatable {
-        testOptionalEventDestination(stream,
-                                     object: object,
-                                     keyPathOrGet: keyPathOrGetSet.mapRight { $0.getter },
-                                     values: values,
-                                     file: file,
-                                     line: line)
-        testOptionalEventSource(stream,
-                                object: object,
-                                keyPathOrSet: keyPathOrGetSet.mapRight { $0.setter },
-                                values: values,
-                                file: file,
-                                line: line)
-    }
-
-    func testOptionalEventDestination<T: EventDestination, Object: NSObject>(
-      _ EventDestination: T,
-      object: Object,
-      keyPathOrGet: Either<String, (Object) -> T.Update?>,
-      values: [T.Update],
-      file: StaticString = #file,
-      line: UInt = #line,
-      customGetter: ((Object) -> T.Update?)? = nil
-      ) where T.Update: AsyncNinjaOptionalAdaptor,
-      T.Update.AsyncNinjaWrapped: Equatable {
-        for value in values {
-          EventDestination.update(value, from: .main)
-          let objectValue: T.Update? = eval {
-            switch keyPathOrGet {
-            case let .left(keyPath):
-              return object.value(forKeyPath: keyPath) as? T.Update
-            case let .right(getter):
-              return getter(object)
-            }
-          }
-          XCTAssertEqual(objectValue?.asyncNinjaOptionalValue, value.asyncNinjaOptionalValue, file: file, line: line)
-        }
-    }
-
-    func testOptionalEventSource<T: EventSource, Object: NSObject>(
-      _ EventSource: T,
-      object: Object,
-      keyPathOrSet: Either<String, (Object, T.Update?) -> Void>,
-      values: [T.Update],
-      file: StaticString = #file,
-      line: UInt = #line
-      ) where T.Update: AsyncNinjaOptionalAdaptor,
-      T.Update.AsyncNinjaWrapped: Equatable {
-        var updatingIterator = EventSource.makeIterator()
-        _ = updatingIterator.next() // skip an initial value
-        for value in values {
-          switch keyPathOrSet {
-          case let .left(keyPath):
-            object.setValue(value.asyncNinjaOptionalValue, forKeyPath: keyPath)
-          case let .right(setter):
-            setter(object, value)
-          }
-
-          XCTAssertEqual((updatingIterator.next() as! T.Update?)?.asyncNinjaOptionalValue,
-                         value.asyncNinjaOptionalValue, file: file, line: line)
-        }
-    }
-  }
-
 #endif

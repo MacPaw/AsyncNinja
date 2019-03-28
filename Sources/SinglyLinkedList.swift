@@ -41,14 +41,28 @@ class SinglyLinkedListImpl<Node: SinglyLinkedListElementNode>: Sequence {
     }
   }
 
-  required init<N>(proto: SinglyLinkedListImpl<N>) where N.Element == Element {}
+  required init<N>(proto: SinglyLinkedListImpl<N>) where N.Element == Element {
+    self.count = proto.count
+    var prevNode: Node?
+    var nextNode = proto._frontNode
+    while let node = nextNode {
+      let newNode = Node(element: node.element, next: nil)
+      if case .none = prevNode {
+        _frontNode = newNode
+      }
+      prevNode?.next = newNode
+      prevNode = newNode
+      nextNode = node.next
+    }
+    _backNode = prevNode
+  }
 
   func makeIterator() -> Iterator {
-    return Iterator(node: _frontNode)
+    return Iterator(node: _frontNode, count: count, list: self)
   }
 
   func pushFront(_ element: Element) {
-    let newFrontNode = Node(element: element)
+    let newFrontNode = Node(element: element, next: nil)
     if let oldFrontNode = _frontNode {
       newFrontNode.next = oldFrontNode
     } else {
@@ -63,7 +77,7 @@ class SinglyLinkedListImpl<Node: SinglyLinkedListElementNode>: Sequence {
   }
 
   func pushBack(_ element: Element) {
-    let newBackNode = Node(element: element)
+    let newBackNode = Node(element: element, next: nil)
     if let oldBackNode = _backNode {
       oldBackNode.next = newBackNode
     } else {
@@ -125,20 +139,28 @@ class SinglyLinkedListImpl<Node: SinglyLinkedListElementNode>: Sequence {
 // MARK: Nodes
 
 protocol SinglyLinkedListElementNode: class {
+  /// a type of an element
   associatedtype Element
 
   var element: Element { get }
   var next: Self? { get set }
 
-  init(element: Element)
+  init(element: Element, next: Self?)
+
+  func clone() -> Self
 }
 
 final class SinglyLinkedListStrongElementNode<Element>: SinglyLinkedListElementNode {
   let element: Element
   var next: SinglyLinkedListStrongElementNode<Element>?
 
-  required init(element: Element) {
+  required init(element: Element, next: SinglyLinkedListStrongElementNode<Element>?) {
     self.element = element
+    self.next = next
+  }
+
+  func clone() -> SinglyLinkedListStrongElementNode<Element> {
+    return SinglyLinkedListStrongElementNode<Element>(element: element, next: next?.clone())
   }
 }
 
@@ -148,8 +170,13 @@ final class SinglyLinkedListWeakElementNode<T: AnyObject>: SinglyLinkedListEleme
   var element: Element { return _element }
   var next: SinglyLinkedListWeakElementNode<T>?
 
-  required init(element: Element) {
+  required init(element: Element, next: SinglyLinkedListWeakElementNode<T>?) {
     _element = element
+    self.next = next
+  }
+
+  func clone() -> SinglyLinkedListWeakElementNode<T> {
+    return SinglyLinkedListWeakElementNode<T>(element: element, next: next?.clone())
   }
 }
 
@@ -157,14 +184,19 @@ final class SinglyLinkedListWeakElementNode<T: AnyObject>: SinglyLinkedListEleme
 
 struct SinglyLinkedListIterator<Node: SinglyLinkedListElementNode>: IteratorProtocol {
   private var _node: Node?
+  private var _count: Int
+  private let _list: AnyObject
 
-  init(node: Node?) {
+  init(node: Node?, count: Int, list: AnyObject) {
     _node = node
+    _count = count
+    _list = list
   }
 
   mutating func next() -> Node.Element? {
     if let node = _node {
-      _node = node.next
+      _count -= 1
+      _node = _count > 0 ? node.next : nil
       return node.element
     } else {
       return nil
@@ -175,6 +207,7 @@ struct SinglyLinkedListIterator<Node: SinglyLinkedListElementNode>: IteratorProt
 // MARK: -
 
 protocol SinglyLinkedListBased {
+  /// a type of node
   associatedtype Node: SinglyLinkedListElementNode
   var _impl: SinglyLinkedListImpl<Node> { get set }
 

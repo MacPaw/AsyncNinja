@@ -43,6 +43,7 @@ class ChannelTests: XCTestCase {
     ("testOverUpdateWithSeqence", testOverUpdateWithSeqence),
     ("testOverComplete", testOverComplete),
     ("testStaticCast", testStaticCast),
+    ("testDynamicProperty", testDynamicProperty),
     ("testDoubleBind", testDoubleBind)
   ]
 
@@ -68,8 +69,8 @@ class ChannelTests: XCTestCase {
     let actor = TestActor()
 
     var updates = [Int]()
-    var successValue: String? = nil
-    weak var weakProducer: Producer<Int, String>? = nil
+    var successValue: String?
+    weak var weakProducer: Producer<Int, String>?
 
     let updatesFixture = pickInts()
     let successValueFixture = "I am working correctly!"
@@ -102,8 +103,8 @@ class ChannelTests: XCTestCase {
   func testOnValue() {
     multiTest(repeating: 100) {
       var updates = [Int]()
-      var successValue: String? = nil
-      weak var weakProducer: Producer<Int, String>? = nil
+      var successValue: String?
+      weak var weakProducer: Producer<Int, String>?
 
       let updatesFixture = pickInts()
       let successValueFixture = "I am working correctly!"
@@ -208,7 +209,7 @@ class ChannelTests: XCTestCase {
 
     producer.extractAll().onSuccess {
       XCTAssertEqual($0.updates, [1, 2, 3, 4, 5])
-      XCTAssertEqual($0.completion.success, "Done")
+      XCTAssertEqual($0.completion.maybeSuccess!, "Done")
       expectation.fulfill()
     }
 
@@ -231,7 +232,7 @@ class ChannelTests: XCTestCase {
 
     producer.extractAll().onSuccess {
       XCTAssertEqual($0.updates, [1, 2, 3, 4, 5])
-      XCTAssertEqual($0.completion.success, "Done")
+      XCTAssertEqual($0.completion.maybeSuccess!, "Done")
       expectation.fulfill()
     }
 
@@ -248,7 +249,7 @@ class ChannelTests: XCTestCase {
 
     producer.extractAll().onSuccess {
       XCTAssertEqual($0.updates, [1, 2, 3, 4, 5])
-      XCTAssertEqual($0.completion.success, "Done")
+      XCTAssertEqual($0.completion.maybeSuccess!, "Done")
       expectation.fulfill()
     }
 
@@ -300,6 +301,21 @@ class ChannelTests: XCTestCase {
     sema.wait()
     sema.wait()
     sema.wait()
+  }
+
+  func testDynamicProperty() {
+    let initialValue = "initial value"
+    let newValue = "newValue"
+    let nextValue = "nextValue"
+
+    let actor = TestActor()
+    let dynamicProperty = actor.makeDynamicProperty(initialValue)
+
+    dynamicProperty.value = newValue
+    XCTAssertEqual(dynamicProperty.value, newValue)
+
+    dynamicProperty.value = nextValue
+    XCTAssertEqual(dynamicProperty.value, nextValue)
   }
 
   func testDoubleBind() {

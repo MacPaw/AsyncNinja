@@ -48,6 +48,7 @@ class FutureTests: XCTestCase {
     ("testFlatten_InnerFailure", testFlatten_InnerFailure),
     ("testChannelFlatten", testChannelFlatten),
     ("testGroupCompletionFuture", testGroupCompletionFuture),
+    ("testOnCompleteOnMultipleExecutors", testOnCompleteOnMultipleExecutors),
     ("testDescription", testDescription)
     ]
 
@@ -58,7 +59,7 @@ class FutureTests: XCTestCase {
       weak var weakMappedFuture: Future<Int>?
 
       let fixtureResult = pickInt()
-      var result: Int? = nil
+      var result: Int?
 
       queue.sync {
         var futureValue: Future<Int>? = .succeeded(fixtureResult)
@@ -70,7 +71,7 @@ class FutureTests: XCTestCase {
         }
         weakFuture = futureValue
         weakMappedFuture = mappedFutureValue
-        result = mappedFutureValue!.wait().success!
+        result = mappedFutureValue!.wait().maybeSuccess
         futureValue = nil
         mappedFutureValue = nil
       }
@@ -172,7 +173,7 @@ class FutureTests: XCTestCase {
     let result = mappedFuture.wait()
     queue.sync { nop() }
     XCTAssertNil(weakInitialFuture)
-    XCTAssertEqual(result.success, valueSquared)
+    XCTAssertEqual(result.maybeSuccess!, valueSquared)
   }
 
   func testMap_Failure() {
@@ -192,7 +193,7 @@ class FutureTests: XCTestCase {
 
     queue.sync { nop() }
     XCTAssertNil(weakInitialFuture)
-    XCTAssertEqual(result.failure as? TestError, .testCode)
+    XCTAssertEqual(result.maybeFailure as? TestError, .testCode)
   }
 
   func testMapContextual_Success_ContextAlive() {
@@ -222,7 +223,7 @@ class FutureTests: XCTestCase {
     actor.internalQueue.sync { nop() }
     XCTAssertNil(weakInitialFuture)
     XCTAssertNil(weakMappedFuture)
-    XCTAssertEqual(result.success, valueSquared)
+    XCTAssertEqual(result.maybeSuccess!, valueSquared)
   }
 
   func testMapContextual_Success_ContextDead() {
@@ -250,7 +251,7 @@ class FutureTests: XCTestCase {
     // self.waitForExpectations(timeout: 1.0)
     let result = mappedFuture.wait()
     XCTAssertNil(weakInitialFuture)
-    XCTAssertEqual(result.failure as? AsyncNinjaError, .contextDeallocated)
+    XCTAssertEqual(result.maybeFailure as? AsyncNinjaError, .contextDeallocated)
   }
 
   func testMapContextual_Failure_ContextAlive() {
@@ -278,7 +279,7 @@ class FutureTests: XCTestCase {
 
       actor.internalQueue.sync { nop() }
       XCTAssertNil(weakInitialFuture)
-      XCTAssertEqual(result.failure as? TestError, .testCode)
+      XCTAssertEqual(result.maybeFailure as? TestError, .testCode)
     }
   }
 
@@ -308,7 +309,7 @@ class FutureTests: XCTestCase {
     //self.waitForExpectations(timeout: 0.1)
     let result = mappedFuture.wait()
     XCTAssertNil(weakInitialFuture)
-    XCTAssertEqual(result.failure as? AsyncNinjaError, .contextDeallocated)
+    XCTAssertEqual(result.maybeFailure as? AsyncNinjaError, .contextDeallocated)
   }
 
   func testOnCompleteContextual_ContextAlive_RegularActor() {
@@ -381,35 +382,21 @@ class FutureTests: XCTestCase {
   }
 
   func testFlatten() {
-    let startTime = DispatchTime.now()
-    let timeout = startTime + 0.7
     let value = pickInt()
-    let future3D = future(after: 0.2) { return future(after: 0.3) { value } }
-    let future2D = future3D.flatten()
-    if let failable = future2D.wait(timeout: timeout) {
-      XCTAssertEqual(failable.success!, value)
-      let finishTime = DispatchTime.now()
-      XCTAssert(startTime + 0.3 < finishTime)
-      XCTAssert(startTime + 0.7 > finishTime)
-    } else {
-      XCTFail("timeout")
+    let future3D = future(executor: .queue(pickQoS())) {
+      return future(executor: .queue(pickQoS())) { value }
     }
+    let future2D = future3D.flatten()
+    let failable = future2D.wait()
+    XCTAssertEqual(failable.maybeSuccess, value)
   }
 
   func testFlatten_OuterFailure() {
     func fail() throws -> Future<Int> { throw AsyncNinjaError.cancelled }
-    let startTime = DispatchTime.now()
-    let timeout = startTime + 0.4
-    let future3D = future(after: 0.2) { try fail() }
+    let future3D = future(executor: .default) { try fail() }
     let future2D = future3D.flatten()
-    if let failable = future2D.wait(timeout: timeout) {
-      XCTAssertEqual(failable.failure! as? AsyncNinjaError, AsyncNinjaError.cancelled)
-      let finishTime = DispatchTime.now()
-      XCTAssert(startTime + 0.1 < finishTime)
-      XCTAssert(startTime + 0.3 > finishTime)
-    } else {
-      XCTFail("timeout")
-    }
+    let failable = future2D.wait()
+    XCTAssertEqual(failable.maybeFailure! as? AsyncNinjaError, AsyncNinjaError.cancelled)
   }
 
   func testFlatten_InnerFailure() {
@@ -419,7 +406,7 @@ class FutureTests: XCTestCase {
     let future3D = future(after: 0.2) { return future(after: 0.3) { try fail() } }
     let future2D = future3D.flatten()
     if let failable = future2D.wait(timeout: timeout) {
-      XCTAssertEqual(failable.failure! as? AsyncNinjaError, AsyncNinjaError.cancelled)
+      XCTAssertEqual(failable.maybeFailure! as? AsyncNinjaError, AsyncNinjaError.cancelled)
       let finishTime = DispatchTime.now()
       XCTAssert(startTime + 0.3 < finishTime)
       XCTAssert(startTime + 0.7 > finishTime)
@@ -451,7 +438,7 @@ class FutureTests: XCTestCase {
     let (updates, failable) = flattenedChannel.waitForAll()
     let finishTime = DispatchTime.now()
     XCTAssertEqual(updates, ["a", "b", "c", "d", "e"])
-    XCTAssertEqual(failable.success!, value)
+    XCTAssertEqual(failable.maybeSuccess, value)
     XCTAssert(startTime + 0.3 < finishTime)
     XCTAssert(startTime + 1.2 > finishTime)
   }
@@ -472,14 +459,45 @@ class FutureTests: XCTestCase {
     self.waitForExpectations(timeout: 0.2)
   }
 
+  func testOnCompleteOnMultipleExecutors() {
+    let executors: [Executor] = [
+      .primary,
+      .immediate,
+      .userInteractive,
+      .userInitiated,
+      .default,
+      .utility,
+      .background
+    ]
+    multiTest {
+      let expectedValue = pickInt()
+      let futureValue = future(after: 0.1) { return expectedValue }
+      let group = DispatchGroup()
+      for executor in executors {
+        group.enter()
+        futureValue.onSuccess(executor: executor) { (actualValue) in
+          XCTAssertEqual(expectedValue, actualValue)
+          group.leave()
+        }
+      }
+
+      group.wait()
+    }
+  }
+
   func testDescription() {
     let futureA = future(success: 1)
     XCTAssertEqual("Succeded(1) Future", futureA.description)
     XCTAssertEqual("Succeded(1) Future<Int>", futureA.debugDescription)
 
     let futureB: Future<Int> = .failed(TestError.testCode)
+    #if swift(>=5.0)
+    XCTAssertEqual("Failed(TestError) Future", futureB.description)
+    XCTAssertEqual("Failed(TestError) Future<Int>", futureB.debugDescription)
+    #else
     XCTAssertEqual("Failed(testCode) Future", futureB.description)
     XCTAssertEqual("Failed(testCode) Future<Int>", futureB.debugDescription)
+    #endif
 
     let futureC = Promise<Int>()
     XCTAssertEqual("Incomplete Future", futureC.description)

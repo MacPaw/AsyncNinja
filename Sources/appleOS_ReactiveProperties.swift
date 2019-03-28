@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2016-2017 Anton Mironov
+//  Copyright (c) 2016-2019 Anton Mironov
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"),
@@ -24,20 +24,41 @@
   import Foundation
 
   /// `ReactiveProperties` is an adaptor for reactive properties.
-  public struct ReactiveProperties<Object: NSObject> where Object: Retainer {
+  public struct ReactiveProperties<Object: NSObject&Retainer> {
+    /// a getter that could be provided as customization point
     public typealias CustomGetter<T> = (Object) -> T?
+    /// a setter that could be provided as customization point
     public typealias CustomSetter<T> = (Object, T) -> Void
 
-    var object: Object
-    var executor: Executor
-    var originalExecutor: Executor?
-    var observationSession: ObservationSession?
+    /// object that hosts reactive properties
+    public var object: Object
 
-    init(object: Object, executor: Executor, originalExecutor: Executor?, observationSession: ObservationSession?) {
+    /// executor to update object on
+    public var executor: Executor
+
+    /// original exectutor this instance was created on
+    public var originalExecutor: Executor?
+
+    /// observation session used by this instance
+    public var observationSession: ObservationSession?
+
+    /// designated initalizer
+    public init(
+      object: Object,
+      executor: Executor,
+      originalExecutor: Executor?,
+      observationSession: ObservationSession?) {
       self.object = object
       self.executor = executor
       self.originalExecutor = originalExecutor
       self.observationSession = observationSession
+    }
+
+    func reactiveProperties<O: NSObject&Retainer>(with object: O) -> ReactiveProperties<O> {
+      return ReactiveProperties<O>(object: object,
+                                   executor: executor,
+                                   originalExecutor: originalExecutor,
+                                   observationSession: observationSession)
     }
   }
 
@@ -235,8 +256,66 @@
 
     /// Short and useful property that returns `ReactiveProperties` and covers `99%` of use cases
     var rp: ReactiveProperties<Self> { return reactiveProperties(from: executor) }
-
-    /// The same as `rp` but for those who came from `Rx` world
-    var rx: ReactiveProperties<Self> { return reactiveProperties(from: executor) }
   }
+#endif
+
+#if os(macOS)
+
+import AppKit
+public extension ReactiveProperties {
+  func anyUpdatable(
+    forBindingName bindingName: NSBindingName,
+    initialValue: Any?) -> ProducerProxy<Any?, Void> {
+    return object.updatable(forBindingName: bindingName,
+                            executor: executor,
+                            from: originalExecutor,
+                            observationSession: observationSession,
+                            initialValue: initialValue)
+  }
+
+  func updatable<T>(
+    forBindingName bindingName: NSBindingName,
+    channelBufferSize: Int = 1,
+    initialValue: T?,
+    transformer: @escaping (Any?) -> T? = { $0 as? T },
+    reveseTransformer: @escaping (T?) -> Any? = { $0 }
+    ) -> ProducerProxy<T?, Void> {
+    let typeerasedProducerProxy = object.updatable(forBindingName: bindingName,
+                                                   executor: executor,
+                                                   from: originalExecutor,
+                                                   observationSession: observationSession,
+                                                   initialValue: initialValue)
+
+    var isTypesafeProxyUpdatingEnabled = true
+    let typesafeProducerProxy = ProducerProxy<T?, Void>(
+      updateExecutor: executor,
+      bufferSize: channelBufferSize
+    ) { [weak typeerasedProducerProxy] (_, event, originalExecutor) in
+      isTypesafeProxyUpdatingEnabled = false
+      guard let typeerasedProducerProxy = typeerasedProducerProxy else { return }
+      switch event {
+      case .update(let update):
+        let transformedUpdate = reveseTransformer(update)
+        typeerasedProducerProxy.update(transformedUpdate, from: originalExecutor)
+      case .completion(let completion):
+        typeerasedProducerProxy.complete(completion, from: originalExecutor)
+      }
+      isTypesafeProxyUpdatingEnabled = true
+    }
+
+    let handler = typeerasedProducerProxy.makeUpdateHandler(
+      executor: .immediate
+    ) { [weak typesafeProducerProxy] (update, originalExecutor) in
+      guard
+        isTypesafeProxyUpdatingEnabled,
+        let typesafeProducerProxy = typesafeProducerProxy
+        else { return }
+      _ = typesafeProducerProxy.tryUpdateWithoutHandling(transformer(update), from: originalExecutor)
+    }
+
+    typesafeProducerProxy._asyncNinja_retainHandlerUntilFinalization(handler)
+    return typesafeProducerProxy
+  }
+}
+
 #endif
