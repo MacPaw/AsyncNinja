@@ -429,7 +429,7 @@
 		OBJ_1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1020;
 				TargetAttributes = {
 					OBJ_149 = {
 						LastSwiftMigration = 1020;
@@ -441,10 +441,11 @@
 			};
 			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "AsyncNinja" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = OBJ_5;
 			productRefGroup = OBJ_87 /* Products */;
