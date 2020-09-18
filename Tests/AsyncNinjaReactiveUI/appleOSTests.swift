@@ -25,7 +25,6 @@
 import XCTest
 import Dispatch
 @testable import AsyncNinja
-@testable import AsyncNinjaReactiveUI
 
 class appleOSTests: XCTestCase {
 }

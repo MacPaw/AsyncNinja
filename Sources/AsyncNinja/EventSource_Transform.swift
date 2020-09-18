@@ -358,8 +358,8 @@ public extension EventSource {
     bufferSize: DerivedChannelBufferSize = .default
     ) -> Channel<Update, Success> {
     
-    var locking = makeLocking(isFair: true)
-    var updatesQueue = Queue<Update>()
+    let locking = makeLocking(isFair: true)
+    let updatesQueue = Queue<Update>()
     var numberOfFirstToTake = first
     
     func onEvent(

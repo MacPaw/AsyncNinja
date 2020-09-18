@@ -23,7 +23,6 @@
 #if os(macOS)
 
 import AppKit
-import AsyncNinja
 
 class BindingProxy: NSObject, ObservationSessionItem {
   weak var producerProxy: ProducerProxy<Any?, Void>?

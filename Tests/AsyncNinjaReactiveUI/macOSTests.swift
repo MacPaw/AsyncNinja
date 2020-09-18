@@ -24,7 +24,6 @@
 import XCTest
 import Dispatch
 import AppKit
-@testable import AsyncNinjaReactiveUI
 
 class macOSTests: appleOSTests {
   static let allTests = [
