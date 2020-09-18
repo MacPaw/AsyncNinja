@@ -338,7 +338,7 @@ public extension EventSource {
     bufferSize: DerivedChannelBufferSize = .default
     ) -> Channel<Update, Success> {
     // Test: EventSource_TransformTests.testSkip
-    var locking = makeLocking(isFair: true)
+    let locking = makeLocking(isFair: true)
     var updatesQueue = Queue<Update>()
     var numberOfFirstToSkip = first
     let numberOfLastToSkip = last
@@ -400,7 +400,7 @@ public extension EventSource {
     bufferSize: DerivedChannelBufferSize = .default
     ) -> Channel<Update, Success> {
     // Test: EventSource_TransformTests.testTake
-    var locking = makeLocking(isFair: true)
+    let locking = makeLocking(isFair: true)
     var updatesQueue = Queue<Update>()
     var numberOfFirstToTake = first
     let numberOfLastToTake = last

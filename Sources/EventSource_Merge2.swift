@@ -36,7 +36,7 @@ public func merge<T: EventSource, U: EventSource>(
   let producer = Producer<T.Update, (T.Success, U.Success)>(bufferSize: bufferSize_)
   let weakProducer = WeakBox(producer)
 
-  var locking = makeLocking()
+  let locking = makeLocking()
   var successA: T.Success?
   var successB: U.Success?
 

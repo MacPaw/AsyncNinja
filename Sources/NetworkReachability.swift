@@ -49,8 +49,8 @@
       }
 
       func makeNetworkReachability() -> SCNetworkReachability? {
-        let localAddress: UnsafePointer<sockaddr>? = addressPair.localAddress?.data.withUnsafeBytes { $0 }
-        let remoteAddress: UnsafePointer<sockaddr>? = addressPair.remoteAddress?.data.withUnsafeBytes { $0 }
+        let localAddress: UnsafePointer<sockaddr>? = addressPair.localAddress?.data.withUnsafeBytes { $0.bindMemory(to: sockaddr.self).baseAddress }
+        let remoteAddress: UnsafePointer<sockaddr>? = addressPair.remoteAddress?.data.withUnsafeBytes { $0.bindMemory(to: sockaddr.self).baseAddress }
         return SCNetworkReachabilityCreateWithAddressPair(nil, localAddress, remoteAddress)
       }
 
@@ -77,8 +77,9 @@
       }
 
       func makeNetworkReachability() -> SCNetworkReachability? {
-        return address.data.withUnsafeBytes {
-          return SCNetworkReachabilityCreateWithAddress(nil, $0)
+        address.data.withUnsafeBytes { (ptr: UnsafeRawBufferPointer) -> SCNetworkReachability? in
+          ptr.bindMemory(to: sockaddr.self).baseAddress
+            .flatMap { SCNetworkReachabilityCreateWithAddress(nil, $0) }
         }
       }
 
@@ -165,9 +166,9 @@
     var data: Data
 
     /// Reference to a stored sockaddr
-    public var sockaddrRef: UnsafePointer<sockaddr> {
-      return data.withUnsafeBytes { (bytes: UnsafePointer<sockaddr>) -> UnsafePointer<sockaddr> in
-        return bytes
+    public var sockaddrRef: UnsafePointer<sockaddr>? {
+      data.withUnsafeBytes { (byte: UnsafeRawBufferPointer) -> UnsafePointer<sockaddr>?
+        in (byte.bindMemory(to: sockaddr.self).baseAddress)
       }
     }
 
