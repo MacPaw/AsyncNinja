@@ -7,106 +7,115 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B87378E01F67EA5900B6FF97 /* SinglyLinkedListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B87378DF1F67EA5900B6FF97 /* SinglyLinkedListTests.swift */; };
-		B873DAB61F6D04BD00A04524 /* SinglyLinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B873DAB51F6D04BD00A04524 /* SinglyLinkedList.swift */; };
-		B87EC5CC1F6D565900ABBBE8 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B87EC5CB1F6D565900ABBBE8 /* Queue.swift */; };
-		B87EC5CE1F6D687700ABBBE8 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B87EC5CD1F6D687700ABBBE8 /* Stack.swift */; };
-		B8B5201E1EBF0D18006C27DA /* EventSource_Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B5201D1EBF0D18006C27DA /* EventSource_Sample.swift */; };
-		B8B520201EBF1604006C27DA /* EventSource_Merge2Unrelated.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B5201F1EBF1604006C27DA /* EventSource_Merge2Unrelated.swift */; };
-		B8B520221EBF2918006C27DA /* EventSource_Debounce.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B520211EBF2918006C27DA /* EventSource_Debounce.swift */; };
-		B8B520241EBF2F54006C27DA /* Sequence_AsyncFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B520231EBF2F54006C27DA /* Sequence_AsyncFlatMap.swift */; };
-		B8B520261EBF3287006C27DA /* Sequence_AsyncReduce.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B520251EBF3287006C27DA /* Sequence_AsyncReduce.swift */; };
-		B8C99AC31F5C742000E16257 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C99AC21F5C742000E16257 /* Box.swift */; };
-		B8DC12851ED093CF0099893A /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8DC12831ED093C60099893A /* PerformanceTests.swift */; };
-		F812B7A421DEDC4E00571A07 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = F812B7A321DEDC4E00571A07 /* Debug.swift */; };
-		F812B7A621DEE6DC00571A07 /* appleOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F812B7A521DEE6DC00571A07 /* appleOSTests.swift */; };
-		F812B7A821DEE91200571A07 /* macOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F812B7A721DEE91200571A07 /* macOSTests.swift */; };
-		F812B7AC21E0E78C00571A07 /* macOS_BindingsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F812B7AA21E0E5CE00571A07 /* macOS_BindingsProxy.swift */; };
-		F819DC181E8A9F2A0072E0B1 /* Either.swift in Sources */ = {isa = PBXBuildFile; fileRef = F819DC171E8A9F2A0072E0B1 /* Either.swift */; };
-		F81A3EB51EA232DE009B0144 /* OptionalAdaptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81A3EB41EA232DE009B0144 /* OptionalAdaptorTests.swift */; };
-		F8419BD41E90FCB60067701C /* CancellationTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8419BD31E90FCB60067701C /* CancellationTokenTests.swift */; };
-		F8419BD61E91080A0067701C /* EitherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8419BD51E9108090067701C /* EitherTests.swift */; };
-		F8419BD81E911CF00067701C /* ChannelMakersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8419BD71E911CF00067701C /* ChannelMakersTests.swift */; };
-		F8419BDA1E913B580067701C /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8419BD91E913B580067701C /* CacheTests.swift */; };
-		F85659571E97D7FE007EDC98 /* TryExecute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85659561E97D7FE007EDC98 /* TryExecute.swift */; };
-		F86BE0641E983E20008B7BDC /* TryExecuteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86BE0621E983DF5008B7BDC /* TryExecuteTests.swift */; };
-		F87E09221E9C337F006CD1C9 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E09211E9C337F006CD1C9 /* NetworkReachability.swift */; };
-		F88DBFF81EC3A3B700FC589E /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88DBFF61EC3A29000FC589E /* Fixtures.swift */; };
-		OBJ_100 /* appleOS_ReactiveProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* appleOS_ReactiveProperties.swift */; };
-		OBJ_101 /* appleOS_Retainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* appleOS_Retainer.swift */; };
-		OBJ_102 /* appleOS_URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* appleOS_URLSession.swift */; };
-		OBJ_103 /* BaseProducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* BaseProducer.swift */; };
-		OBJ_104 /* CachableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* CachableValue.swift */; };
-		OBJ_105 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* Cache.swift */; };
-		OBJ_106 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_19 /* CancellationToken.swift */; };
-		OBJ_107 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* Channel.swift */; };
-		OBJ_108 /* Channel_makers.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_21 /* Channel_makers.swift */; };
-		OBJ_109 /* Completable_Implementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_22 /* Completable_Implementation.swift */; };
-		OBJ_110 /* Completing_Implementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_23 /* Completing_Implementation.swift */; };
-		OBJ_111 /* Completing_Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_24 /* Completing_Transform.swift */; };
-		OBJ_112 /* ConstantFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_25 /* ConstantFuture.swift */; };
-		OBJ_113 /* Dispatch_Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_26 /* Dispatch_Extensions.swift */; };
-		OBJ_114 /* DynamicProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_27 /* DynamicProperty.swift */; };
-		OBJ_115 /* EventSource_Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* EventSource_Combine.swift */; };
-		OBJ_116 /* EventSource_FlatMapFutures.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_29 /* EventSource_FlatMapFutures.swift */; };
-		OBJ_117 /* EventSource_Implementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_30 /* EventSource_Implementation.swift */; };
-		OBJ_118 /* EventSource_Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_31 /* EventSource_Map.swift */; };
-		OBJ_119 /* EventSource_Merge2.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_32 /* EventSource_Merge2.swift */; };
-		OBJ_120 /* EventSource_Scan.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_33 /* EventSource_Scan.swift */; };
-		OBJ_121 /* EventSource_ToFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_34 /* EventSource_ToFuture.swift */; };
-		OBJ_122 /* EventSource_Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_35 /* EventSource_Transform.swift */; };
-		OBJ_123 /* EventSource_Zip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_36 /* EventSource_Zip2.swift */; };
-		OBJ_124 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_37 /* ExecutionContext.swift */; };
-		OBJ_125 /* Executor.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_38 /* Executor.swift */; };
-		OBJ_126 /* Fallible.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_39 /* Fallible.swift */; };
-		OBJ_127 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_40 /* Future.swift */; };
-		OBJ_128 /* Future_Makers.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_41 /* Future_Makers.swift */; };
-		OBJ_129 /* iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_42 /* iOS.swift */; };
-		OBJ_130 /* KeyProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_43 /* KeyProtocols.swift */; };
-		OBJ_131 /* Locking.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_44 /* Locking.swift */; };
-		OBJ_132 /* macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_45 /* macOS.swift */; };
-		OBJ_133 /* MergeFutures.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_46 /* MergeFutures.swift */; };
-		OBJ_134 /* OptionalAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_47 /* OptionalAdaptor.swift */; };
-		OBJ_135 /* Producer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_48 /* Producer.swift */; };
-		OBJ_136 /* ProducerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_49 /* ProducerProxy.swift */; };
-		OBJ_137 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_50 /* Promise.swift */; };
-		OBJ_139 /* ReleasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_52 /* ReleasePool.swift */; };
-		OBJ_140 /* Sequence_AsyncMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_53 /* Sequence_AsyncMap.swift */; };
-		OBJ_141 /* Sink.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_54 /* Sink.swift */; };
-		OBJ_143 /* TimerChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_56 /* TimerChannel.swift */; };
-		OBJ_144 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_57 /* Util.swift */; };
-		OBJ_145 /* watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_58 /* watchOS.swift */; };
-		OBJ_146 /* Zip2Futures.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_59 /* Zip2Futures.swift */; };
-		OBJ_147 /* Zip3Futures.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_60 /* Zip3Futures.swift */; };
-		OBJ_154 /* BatchFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_63 /* BatchFutureTests.swift */; };
-		OBJ_155 /* CachableValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_64 /* CachableValueTests.swift */; };
-		OBJ_156 /* ChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_65 /* ChannelTests.swift */; };
-		OBJ_157 /* EventSource_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_66 /* EventSource_CombineTests.swift */; };
-		OBJ_158 /* EventSource_FlatMapFuturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_67 /* EventSource_FlatMapFuturesTests.swift */; };
-		OBJ_159 /* EventSource_MapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_68 /* EventSource_MapTests.swift */; };
-		OBJ_160 /* EventSource_Merge2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_69 /* EventSource_Merge2Tests.swift */; };
-		OBJ_161 /* EventSource_ScanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_70 /* EventSource_ScanTests.swift */; };
-		OBJ_162 /* EventSource_ToFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_71 /* EventSource_ToFutureTests.swift */; };
-		OBJ_163 /* EventSource_TransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_72 /* EventSource_TransformTests.swift */; };
-		OBJ_164 /* EventSource_Zip2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_73 /* EventSource_Zip2Tests.swift */; };
-		OBJ_165 /* ExecutionContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_74 /* ExecutionContextTests.swift */; };
-		OBJ_166 /* ExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_75 /* ExecutorTests.swift */; };
-		OBJ_167 /* FallibleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_76 /* FallibleTests.swift */; };
-		OBJ_168 /* Future_MakersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_77 /* Future_MakersTests.swift */; };
-		OBJ_169 /* FutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_78 /* FutureTests.swift */; };
-		OBJ_170 /* iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_79 /* iOSTests.swift */; };
-		OBJ_171 /* ObserversTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_80 /* ObserversTests.swift */; };
-		OBJ_172 /* ReleasePoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_81 /* ReleasePoolTests.swift */; };
-		OBJ_173 /* TestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_82 /* TestUtilities.swift */; };
-		OBJ_174 /* TimerChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_83 /* TimerChannelTests.swift */; };
-		OBJ_175 /* XCTestManifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_84 /* XCTestManifest.swift */; };
-		OBJ_176 /* ZipFuturesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_85 /* ZipFuturesTest.swift */; };
+		68206C9C25152AD200EF558E /* CachableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C5625152AD200EF558E /* CachableValue.swift */; };
+		68206C9D25152AD200EF558E /* EventSource_Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C5725152AD200EF558E /* EventSource_Combine.swift */; };
+		68206C9E25152AD200EF558E /* Sequence_AsyncMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C5825152AD200EF558E /* Sequence_AsyncMap.swift */; };
+		68206C9F25152AD200EF558E /* Fallible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C5925152AD200EF558E /* Fallible.swift */; };
+		68206CA025152AD200EF558E /* Channel_makers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C5A25152AD200EF558E /* Channel_makers.swift */; };
+		68206CA125152AD200EF558E /* KeyProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C5B25152AD200EF558E /* KeyProtocols.swift */; };
+		68206CA225152AD200EF558E /* Executor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C5C25152AD200EF558E /* Executor.swift */; };
+		68206CA325152AD200EF558E /* Either.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C5D25152AD200EF558E /* Either.swift */; };
+		68206CA425152AD200EF558E /* appleOS_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C5E25152AD200EF558E /* appleOS_CoreData.swift */; };
+		68206CA525152AD200EF558E /* macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C5F25152AD200EF558E /* macOS.swift */; };
+		68206CA625152AD200EF558E /* EventSource_StartWith.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6025152AD200EF558E /* EventSource_StartWith.swift */; };
+		68206CA725152AD200EF558E /* Completable_Implementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6125152AD200EF558E /* Completable_Implementation.swift */; };
+		68206CA825152AD200EF558E /* Sequence_AsyncReduce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6225152AD200EF558E /* Sequence_AsyncReduce.swift */; };
+		68206CA925152AD200EF558E /* ReleasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6325152AD200EF558E /* ReleasePool.swift */; };
+		68206CAA25152AD200EF558E /* Producer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6425152AD200EF558E /* Producer.swift */; };
+		68206CAB25152AD200EF558E /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6525152AD200EF558E /* Stack.swift */; };
+		68206CAC25152AD200EF558E /* EventSource_CombineLatests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6625152AD200EF558E /* EventSource_CombineLatests.swift */; };
+		68206CAD25152AD200EF558E /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6725152AD200EF558E /* Future.swift */; };
+		68206CAE25152AD200EF558E /* EventSource_Scan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6825152AD200EF558E /* EventSource_Scan.swift */; };
+		68206CAF25152AD200EF558E /* appleOS_Observation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6925152AD200EF558E /* appleOS_Observation.swift */; };
+		68206CB025152AD200EF558E /* TryExecute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6A25152AD200EF558E /* TryExecute.swift */; };
+		68206CB125152AD200EF558E /* EventSource_Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6B25152AD200EF558E /* EventSource_Transform.swift */; };
+		68206CB225152AD200EF558E /* appleOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6C25152AD200EF558E /* appleOS.swift */; };
+		68206CB325152AD200EF558E /* EventSource_Merge2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6D25152AD200EF558E /* EventSource_Merge2.swift */; };
+		68206CB425152AD200EF558E /* Zip3Futures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6E25152AD200EF558E /* Zip3Futures.swift */; };
+		68206CB525152AD200EF558E /* appleOS_ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C6F25152AD200EF558E /* appleOS_ExecutionContext.swift */; };
+		68206CB625152AD200EF558E /* EventSource_Debounce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7025152AD200EF558E /* EventSource_Debounce.swift */; };
+		68206CB725152AD200EF558E /* Dispatch_Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7125152AD200EF558E /* Dispatch_Extensions.swift */; };
+		68206CB825152AD200EF558E /* appleOS_Retainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7225152AD200EF558E /* appleOS_Retainer.swift */; };
+		68206CB925152AD200EF558E /* SinglyLinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7325152AD200EF558E /* SinglyLinkedList.swift */; };
+		68206CBA25152AD200EF558E /* ProducerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7425152AD200EF558E /* ProducerProxy.swift */; };
+		68206CBB25152AD200EF558E /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7525152AD200EF558E /* Channel.swift */; };
+		68206CBC25152AD200EF558E /* Zip2Futures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7625152AD200EF558E /* Zip2Futures.swift */; };
+		68206CBD25152AD200EF558E /* EventSource_Zip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7725152AD200EF558E /* EventSource_Zip2.swift */; };
+		68206CBE25152AD200EF558E /* Sink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7825152AD200EF558E /* Sink.swift */; };
+		68206CBF25152AD200EF558E /* appleOS_URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7925152AD200EF558E /* appleOS_URLSession.swift */; };
+		68206CC025152AD200EF558E /* TimerChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7A25152AD200EF558E /* TimerChannel.swift */; };
+		68206CC125152AD200EF558E /* EventSource_ifEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7B25152AD200EF558E /* EventSource_ifEmpty.swift */; };
+		68206CC225152AD200EF558E /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7C25152AD200EF558E /* Box.swift */; };
+		68206CC325152AD200EF558E /* PropertyWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7D25152AD200EF558E /* PropertyWrappers.swift */; };
+		68206CC425152AD200EF558E /* EventSource_Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7E25152AD200EF558E /* EventSource_Sample.swift */; };
+		68206CC525152AD200EF558E /* Producer_makers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C7F25152AD200EF558E /* Producer_makers.swift */; };
+		68206CC625152AD200EF558E /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8025152AD200EF558E /* ExecutionContext.swift */; };
+		68206CC725152AD200EF558E /* BaseProducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8125152AD200EF558E /* BaseProducer.swift */; };
+		68206CC825152AD200EF558E /* MergeFutures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8225152AD200EF558E /* MergeFutures.swift */; };
+		68206CC925152AD200EF558E /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8325152AD200EF558E /* Util.swift */; };
+		68206CCA25152AD200EF558E /* Future_Makers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8425152AD200EF558E /* Future_Makers.swift */; };
+		68206CCB25152AD200EF558E /* Sequence_AsyncFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8525152AD200EF558E /* Sequence_AsyncFlatMap.swift */; };
+		68206CCC25152AD200EF558E /* appleOS_Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8625152AD200EF558E /* appleOS_Notifications.swift */; };
+		68206CCD25152AD200EF558E /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8725152AD200EF558E /* Cache.swift */; };
+		68206CCE25152AD200EF558E /* watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8825152AD200EF558E /* watchOS.swift */; };
+		68206CCF25152AD200EF558E /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8925152AD200EF558E /* Promise.swift */; };
+		68206CD025152AD200EF558E /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8A25152AD200EF558E /* Queue.swift */; };
+		68206CD125152AD200EF558E /* EventSource_Implementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8B25152AD200EF558E /* EventSource_Implementation.swift */; };
+		68206CD225152AD200EF558E /* EventSource_Throttle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8C25152AD200EF558E /* EventSource_Throttle.swift */; };
+		68206CD325152AD200EF558E /* OptionalAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8D25152AD200EF558E /* OptionalAdaptor.swift */; };
+		68206CD425152AD200EF558E /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8E25152AD200EF558E /* Debug.swift */; };
+		68206CD525152AD200EF558E /* EventSource_Merge2Unrelated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C8F25152AD200EF558E /* EventSource_Merge2Unrelated.swift */; };
+		68206CD625152AD200EF558E /* Completing_Implementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9025152AD200EF558E /* Completing_Implementation.swift */; };
+		68206CD725152AD200EF558E /* EventSource_FlatMapFutures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9125152AD200EF558E /* EventSource_FlatMapFutures.swift */; };
+		68206CD825152AD200EF558E /* Promise_makers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9225152AD200EF558E /* Promise_makers.swift */; };
+		68206CD925152AD200EF558E /* EventSource_Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9325152AD200EF558E /* EventSource_Map.swift */; };
+		68206CDA25152AD200EF558E /* EventSource_ToFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9425152AD200EF558E /* EventSource_ToFuture.swift */; };
+		68206CDB25152AD200EF558E /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9525152AD200EF558E /* CancellationToken.swift */; };
+		68206CDC25152AD200EF558E /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9625152AD200EF558E /* NetworkReachability.swift */; };
+		68206CDD25152AD200EF558E /* DynamicProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9725152AD200EF558E /* DynamicProperty.swift */; };
+		68206CDE25152AD200EF558E /* Completing_Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9825152AD200EF558E /* Completing_Transform.swift */; };
+		68206CDF25152AD200EF558E /* EventSource_Concat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9925152AD200EF558E /* EventSource_Concat.swift */; };
+		68206CE025152AD200EF558E /* Locking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9A25152AD200EF558E /* Locking.swift */; };
+		68206CE125152AD200EF558E /* ConstantFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206C9B25152AD200EF558E /* ConstantFuture.swift */; };
+		68206CE725152AED00EF558E /* macOS_ReactiveProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CE325152AED00EF558E /* macOS_ReactiveProperties.swift */; };
+		68206CE825152AED00EF558E /* macOS_BindingsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CE425152AED00EF558E /* macOS_BindingsProxy.swift */; };
+		68206CE925152AED00EF558E /* iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CE525152AED00EF558E /* iOS.swift */; };
+		68206CEA25152AED00EF558E /* appleOS_ReactiveProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CE625152AED00EF558E /* appleOS_ReactiveProperties.swift */; };
+		68206D1025152D9200EF558E /* appleOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CEC25152D9200EF558E /* appleOSTests.swift */; };
+		68206D1125152D9200EF558E /* iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CED25152D9200EF558E /* iOSTests.swift */; };
+		68206D1225152D9200EF558E /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CEE25152D9200EF558E /* Fixtures.swift */; };
+		68206D1325152D9200EF558E /* macOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CEF25152D9200EF558E /* macOSTests.swift */; };
+		68206D1525152D9200EF558E /* SinglyLinkedListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CF225152D9200EF558E /* SinglyLinkedListTests.swift */; };
+		68206D1625152D9200EF558E /* CancellationTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CF325152D9200EF558E /* CancellationTokenTests.swift */; };
+		68206D1725152D9200EF558E /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CF425152D9200EF558E /* CacheTests.swift */; };
+		68206D1825152D9200EF558E /* EventSource_TransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CF525152D9200EF558E /* EventSource_TransformTests.swift */; };
+		68206D1925152D9200EF558E /* EventSource_ScanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CF625152D9200EF558E /* EventSource_ScanTests.swift */; };
+		68206D1A25152D9200EF558E /* ZipFuturesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CF725152D9200EF558E /* ZipFuturesTest.swift */; };
+		68206D1B25152D9200EF558E /* ObserversTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CF825152D9200EF558E /* ObserversTests.swift */; };
+		68206D1C25152D9200EF558E /* BatchFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CF925152D9200EF558E /* BatchFutureTests.swift */; };
+		68206D1D25152D9200EF558E /* FutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CFA25152D9200EF558E /* FutureTests.swift */; };
+		68206D1E25152D9200EF558E /* TestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CFB25152D9200EF558E /* TestUtilities.swift */; };
+		68206D1F25152D9200EF558E /* EventSource_Merge2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CFC25152D9200EF558E /* EventSource_Merge2Tests.swift */; };
+		68206D2025152D9200EF558E /* ExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CFD25152D9200EF558E /* ExecutorTests.swift */; };
+		68206D2125152D9200EF558E /* ReleasePoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CFE25152D9200EF558E /* ReleasePoolTests.swift */; };
+		68206D2225152D9200EF558E /* ExecutionContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206CFF25152D9200EF558E /* ExecutionContextTests.swift */; };
+		68206D2325152D9200EF558E /* EventSource_ToFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0025152D9200EF558E /* EventSource_ToFutureTests.swift */; };
+		68206D2425152D9200EF558E /* TryExecuteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0125152D9200EF558E /* TryExecuteTests.swift */; };
+		68206D2525152D9200EF558E /* TimerChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0225152D9200EF558E /* TimerChannelTests.swift */; };
+		68206D2625152D9200EF558E /* EventSource_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0325152D9200EF558E /* EventSource_CombineTests.swift */; };
+		68206D2725152D9200EF558E /* EventSource_FlatMapFuturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0425152D9200EF558E /* EventSource_FlatMapFuturesTests.swift */; };
+		68206D2825152D9200EF558E /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0525152D9200EF558E /* PerformanceTests.swift */; };
+		68206D2925152D9200EF558E /* CachableValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0625152D9200EF558E /* CachableValueTests.swift */; };
+		68206D2A25152D9200EF558E /* ChannelMakersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0725152D9200EF558E /* ChannelMakersTests.swift */; };
+		68206D2B25152D9200EF558E /* EventSource_Zip2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0825152D9200EF558E /* EventSource_Zip2Tests.swift */; };
+		68206D2C25152D9200EF558E /* EitherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0925152D9200EF558E /* EitherTests.swift */; };
+		68206D2D25152D9200EF558E /* OptionalAdaptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0A25152D9200EF558E /* OptionalAdaptorTests.swift */; };
+		68206D2E25152D9200EF558E /* Future_MakersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0B25152D9200EF558E /* Future_MakersTests.swift */; };
+		68206D2F25152D9200EF558E /* EventSource_MapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0C25152D9200EF558E /* EventSource_MapTests.swift */; };
+		68206D3025152D9200EF558E /* FallibleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0D25152D9200EF558E /* FallibleTests.swift */; };
+		68206D3125152D9200EF558E /* XCTestManifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0E25152D9200EF558E /* XCTestManifest.swift */; };
+		68206D3225152D9200EF558E /* ChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68206D0F25152D9200EF558E /* ChannelTests.swift */; };
 		OBJ_178 /* AsyncNinja.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_88 /* AsyncNinja.framework */; };
-		OBJ_95 /* appleOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_8 /* appleOS.swift */; };
-		OBJ_96 /* appleOS_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* appleOS_CoreData.swift */; };
-		OBJ_97 /* appleOS_ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* appleOS_ExecutionContext.swift */; };
-		OBJ_98 /* appleOS_Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* appleOS_Notifications.swift */; };
-		OBJ_99 /* appleOS_Observation.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* appleOS_Observation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,109 +129,119 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B87378DF1F67EA5900B6FF97 /* SinglyLinkedListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglyLinkedListTests.swift; sourceTree = "<group>"; };
-		B873DAB51F6D04BD00A04524 /* SinglyLinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglyLinkedList.swift; sourceTree = "<group>"; };
-		B87EC5CB1F6D565900ABBBE8 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
-		B87EC5CD1F6D687700ABBBE8 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
-		B8B5201D1EBF0D18006C27DA /* EventSource_Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Sample.swift; sourceTree = "<group>"; };
-		B8B5201F1EBF1604006C27DA /* EventSource_Merge2Unrelated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Merge2Unrelated.swift; sourceTree = "<group>"; };
-		B8B520211EBF2918006C27DA /* EventSource_Debounce.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Debounce.swift; sourceTree = "<group>"; };
-		B8B520231EBF2F54006C27DA /* Sequence_AsyncFlatMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence_AsyncFlatMap.swift; sourceTree = "<group>"; };
-		B8B520251EBF3287006C27DA /* Sequence_AsyncReduce.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence_AsyncReduce.swift; sourceTree = "<group>"; };
-		B8C99AC21F5C742000E16257 /* Box.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
-		B8DC12831ED093C60099893A /* PerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
-		F812B7A321DEDC4E00571A07 /* Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
-		F812B7A521DEE6DC00571A07 /* appleOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleOSTests.swift; sourceTree = "<group>"; };
-		F812B7A721DEE91200571A07 /* macOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macOSTests.swift; sourceTree = "<group>"; };
-		F812B7AA21E0E5CE00571A07 /* macOS_BindingsProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macOS_BindingsProxy.swift; sourceTree = "<group>"; };
-		F819DC171E8A9F2A0072E0B1 /* Either.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Either.swift; sourceTree = "<group>"; };
-		F81A3EB41EA232DE009B0144 /* OptionalAdaptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalAdaptorTests.swift; sourceTree = "<group>"; };
-		F8419BD31E90FCB60067701C /* CancellationTokenTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationTokenTests.swift; sourceTree = "<group>"; };
-		F8419BD51E9108090067701C /* EitherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EitherTests.swift; sourceTree = "<group>"; };
-		F8419BD71E911CF00067701C /* ChannelMakersTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelMakersTests.swift; sourceTree = "<group>"; };
-		F8419BD91E913B580067701C /* CacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheTests.swift; sourceTree = "<group>"; };
-		F85659561E97D7FE007EDC98 /* TryExecute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TryExecute.swift; sourceTree = "<group>"; };
-		F86BE0621E983DF5008B7BDC /* TryExecuteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TryExecuteTests.swift; sourceTree = "<group>"; };
-		F87E09211E9C337F006CD1C9 /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
-		F88DBFF61EC3A29000FC589E /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
-		OBJ_10 /* appleOS_ExecutionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleOS_ExecutionContext.swift; sourceTree = "<group>"; };
-		OBJ_11 /* appleOS_Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleOS_Notifications.swift; sourceTree = "<group>"; };
-		OBJ_12 /* appleOS_Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleOS_Observation.swift; sourceTree = "<group>"; };
-		OBJ_13 /* appleOS_ReactiveProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleOS_ReactiveProperties.swift; sourceTree = "<group>"; };
-		OBJ_14 /* appleOS_Retainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleOS_Retainer.swift; sourceTree = "<group>"; };
-		OBJ_15 /* appleOS_URLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleOS_URLSession.swift; sourceTree = "<group>"; };
-		OBJ_16 /* BaseProducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseProducer.swift; sourceTree = "<group>"; };
-		OBJ_17 /* CachableValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachableValue.swift; sourceTree = "<group>"; };
-		OBJ_18 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
-		OBJ_19 /* CancellationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancellationToken.swift; sourceTree = "<group>"; };
-		OBJ_20 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
-		OBJ_21 /* Channel_makers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel_makers.swift; sourceTree = "<group>"; };
-		OBJ_22 /* Completable_Implementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completable_Implementation.swift; sourceTree = "<group>"; };
-		OBJ_23 /* Completing_Implementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completing_Implementation.swift; sourceTree = "<group>"; };
-		OBJ_24 /* Completing_Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completing_Transform.swift; sourceTree = "<group>"; };
-		OBJ_25 /* ConstantFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantFuture.swift; sourceTree = "<group>"; };
-		OBJ_26 /* Dispatch_Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dispatch_Extensions.swift; sourceTree = "<group>"; };
-		OBJ_27 /* DynamicProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicProperty.swift; sourceTree = "<group>"; };
-		OBJ_28 /* EventSource_Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_Combine.swift; sourceTree = "<group>"; };
-		OBJ_29 /* EventSource_FlatMapFutures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_FlatMapFutures.swift; sourceTree = "<group>"; };
-		OBJ_30 /* EventSource_Implementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_Implementation.swift; sourceTree = "<group>"; };
-		OBJ_31 /* EventSource_Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_Map.swift; sourceTree = "<group>"; };
-		OBJ_32 /* EventSource_Merge2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_Merge2.swift; sourceTree = "<group>"; };
-		OBJ_33 /* EventSource_Scan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_Scan.swift; sourceTree = "<group>"; };
-		OBJ_34 /* EventSource_ToFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_ToFuture.swift; sourceTree = "<group>"; };
-		OBJ_35 /* EventSource_Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_Transform.swift; sourceTree = "<group>"; };
-		OBJ_36 /* EventSource_Zip2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_Zip2.swift; sourceTree = "<group>"; };
-		OBJ_37 /* ExecutionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutionContext.swift; sourceTree = "<group>"; };
-		OBJ_38 /* Executor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Executor.swift; sourceTree = "<group>"; };
-		OBJ_39 /* Fallible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fallible.swift; sourceTree = "<group>"; };
-		OBJ_40 /* Future.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
-		OBJ_41 /* Future_Makers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Future_Makers.swift; sourceTree = "<group>"; };
-		OBJ_42 /* iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS.swift; sourceTree = "<group>"; };
-		OBJ_43 /* KeyProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyProtocols.swift; sourceTree = "<group>"; };
-		OBJ_44 /* Locking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locking.swift; sourceTree = "<group>"; };
-		OBJ_45 /* macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macOS.swift; sourceTree = "<group>"; };
-		OBJ_46 /* MergeFutures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergeFutures.swift; sourceTree = "<group>"; };
-		OBJ_47 /* OptionalAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalAdaptor.swift; sourceTree = "<group>"; };
-		OBJ_48 /* Producer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Producer.swift; sourceTree = "<group>"; };
-		OBJ_49 /* ProducerProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProducerProxy.swift; sourceTree = "<group>"; };
-		OBJ_50 /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
-		OBJ_52 /* ReleasePool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleasePool.swift; sourceTree = "<group>"; };
-		OBJ_53 /* Sequence_AsyncMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence_AsyncMap.swift; sourceTree = "<group>"; };
-		OBJ_54 /* Sink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sink.swift; sourceTree = "<group>"; };
-		OBJ_56 /* TimerChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerChannel.swift; sourceTree = "<group>"; };
-		OBJ_57 /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
-		OBJ_58 /* watchOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchOS.swift; sourceTree = "<group>"; };
-		OBJ_59 /* Zip2Futures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zip2Futures.swift; sourceTree = "<group>"; };
+		68206C5625152AD200EF558E /* CachableValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachableValue.swift; sourceTree = "<group>"; };
+		68206C5725152AD200EF558E /* EventSource_Combine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Combine.swift; sourceTree = "<group>"; };
+		68206C5825152AD200EF558E /* Sequence_AsyncMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence_AsyncMap.swift; sourceTree = "<group>"; };
+		68206C5925152AD200EF558E /* Fallible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fallible.swift; sourceTree = "<group>"; };
+		68206C5A25152AD200EF558E /* Channel_makers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel_makers.swift; sourceTree = "<group>"; };
+		68206C5B25152AD200EF558E /* KeyProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyProtocols.swift; sourceTree = "<group>"; };
+		68206C5C25152AD200EF558E /* Executor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Executor.swift; sourceTree = "<group>"; };
+		68206C5D25152AD200EF558E /* Either.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Either.swift; sourceTree = "<group>"; };
+		68206C5E25152AD200EF558E /* appleOS_CoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appleOS_CoreData.swift; sourceTree = "<group>"; };
+		68206C5F25152AD200EF558E /* macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = macOS.swift; sourceTree = "<group>"; };
+		68206C6025152AD200EF558E /* EventSource_StartWith.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_StartWith.swift; sourceTree = "<group>"; };
+		68206C6125152AD200EF558E /* Completable_Implementation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Completable_Implementation.swift; sourceTree = "<group>"; };
+		68206C6225152AD200EF558E /* Sequence_AsyncReduce.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence_AsyncReduce.swift; sourceTree = "<group>"; };
+		68206C6325152AD200EF558E /* ReleasePool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleasePool.swift; sourceTree = "<group>"; };
+		68206C6425152AD200EF558E /* Producer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Producer.swift; sourceTree = "<group>"; };
+		68206C6525152AD200EF558E /* Stack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
+		68206C6625152AD200EF558E /* EventSource_CombineLatests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_CombineLatests.swift; sourceTree = "<group>"; };
+		68206C6725152AD200EF558E /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
+		68206C6825152AD200EF558E /* EventSource_Scan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Scan.swift; sourceTree = "<group>"; };
+		68206C6925152AD200EF558E /* appleOS_Observation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appleOS_Observation.swift; sourceTree = "<group>"; };
+		68206C6A25152AD200EF558E /* TryExecute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TryExecute.swift; sourceTree = "<group>"; };
+		68206C6B25152AD200EF558E /* EventSource_Transform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Transform.swift; sourceTree = "<group>"; };
+		68206C6C25152AD200EF558E /* appleOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appleOS.swift; sourceTree = "<group>"; };
+		68206C6D25152AD200EF558E /* EventSource_Merge2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Merge2.swift; sourceTree = "<group>"; };
+		68206C6E25152AD200EF558E /* Zip3Futures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zip3Futures.swift; sourceTree = "<group>"; };
+		68206C6F25152AD200EF558E /* appleOS_ExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appleOS_ExecutionContext.swift; sourceTree = "<group>"; };
+		68206C7025152AD200EF558E /* EventSource_Debounce.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Debounce.swift; sourceTree = "<group>"; };
+		68206C7125152AD200EF558E /* Dispatch_Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatch_Extensions.swift; sourceTree = "<group>"; };
+		68206C7225152AD200EF558E /* appleOS_Retainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appleOS_Retainer.swift; sourceTree = "<group>"; };
+		68206C7325152AD200EF558E /* SinglyLinkedList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SinglyLinkedList.swift; sourceTree = "<group>"; };
+		68206C7425152AD200EF558E /* ProducerProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProducerProxy.swift; sourceTree = "<group>"; };
+		68206C7525152AD200EF558E /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		68206C7625152AD200EF558E /* Zip2Futures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zip2Futures.swift; sourceTree = "<group>"; };
+		68206C7725152AD200EF558E /* EventSource_Zip2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Zip2.swift; sourceTree = "<group>"; };
+		68206C7825152AD200EF558E /* Sink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sink.swift; sourceTree = "<group>"; };
+		68206C7925152AD200EF558E /* appleOS_URLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appleOS_URLSession.swift; sourceTree = "<group>"; };
+		68206C7A25152AD200EF558E /* TimerChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerChannel.swift; sourceTree = "<group>"; };
+		68206C7B25152AD200EF558E /* EventSource_ifEmpty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_ifEmpty.swift; sourceTree = "<group>"; };
+		68206C7C25152AD200EF558E /* Box.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
+		68206C7D25152AD200EF558E /* PropertyWrappers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyWrappers.swift; sourceTree = "<group>"; };
+		68206C7E25152AD200EF558E /* EventSource_Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Sample.swift; sourceTree = "<group>"; };
+		68206C7F25152AD200EF558E /* Producer_makers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Producer_makers.swift; sourceTree = "<group>"; };
+		68206C8025152AD200EF558E /* ExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContext.swift; sourceTree = "<group>"; };
+		68206C8125152AD200EF558E /* BaseProducer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseProducer.swift; sourceTree = "<group>"; };
+		68206C8225152AD200EF558E /* MergeFutures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MergeFutures.swift; sourceTree = "<group>"; };
+		68206C8325152AD200EF558E /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		68206C8425152AD200EF558E /* Future_Makers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future_Makers.swift; sourceTree = "<group>"; };
+		68206C8525152AD200EF558E /* Sequence_AsyncFlatMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence_AsyncFlatMap.swift; sourceTree = "<group>"; };
+		68206C8625152AD200EF558E /* appleOS_Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appleOS_Notifications.swift; sourceTree = "<group>"; };
+		68206C8725152AD200EF558E /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		68206C8825152AD200EF558E /* watchOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = watchOS.swift; sourceTree = "<group>"; };
+		68206C8925152AD200EF558E /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
+		68206C8A25152AD200EF558E /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
+		68206C8B25152AD200EF558E /* EventSource_Implementation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Implementation.swift; sourceTree = "<group>"; };
+		68206C8C25152AD200EF558E /* EventSource_Throttle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Throttle.swift; sourceTree = "<group>"; };
+		68206C8D25152AD200EF558E /* OptionalAdaptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalAdaptor.swift; sourceTree = "<group>"; };
+		68206C8E25152AD200EF558E /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
+		68206C8F25152AD200EF558E /* EventSource_Merge2Unrelated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Merge2Unrelated.swift; sourceTree = "<group>"; };
+		68206C9025152AD200EF558E /* Completing_Implementation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Completing_Implementation.swift; sourceTree = "<group>"; };
+		68206C9125152AD200EF558E /* EventSource_FlatMapFutures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_FlatMapFutures.swift; sourceTree = "<group>"; };
+		68206C9225152AD200EF558E /* Promise_makers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise_makers.swift; sourceTree = "<group>"; };
+		68206C9325152AD200EF558E /* EventSource_Map.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Map.swift; sourceTree = "<group>"; };
+		68206C9425152AD200EF558E /* EventSource_ToFuture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_ToFuture.swift; sourceTree = "<group>"; };
+		68206C9525152AD200EF558E /* CancellationToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationToken.swift; sourceTree = "<group>"; };
+		68206C9625152AD200EF558E /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
+		68206C9725152AD200EF558E /* DynamicProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicProperty.swift; sourceTree = "<group>"; };
+		68206C9825152AD200EF558E /* Completing_Transform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Completing_Transform.swift; sourceTree = "<group>"; };
+		68206C9925152AD200EF558E /* EventSource_Concat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Concat.swift; sourceTree = "<group>"; };
+		68206C9A25152AD200EF558E /* Locking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Locking.swift; sourceTree = "<group>"; };
+		68206C9B25152AD200EF558E /* ConstantFuture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantFuture.swift; sourceTree = "<group>"; };
+		68206CE325152AED00EF558E /* macOS_ReactiveProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = macOS_ReactiveProperties.swift; sourceTree = "<group>"; };
+		68206CE425152AED00EF558E /* macOS_BindingsProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = macOS_BindingsProxy.swift; sourceTree = "<group>"; };
+		68206CE525152AED00EF558E /* iOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOS.swift; sourceTree = "<group>"; };
+		68206CE625152AED00EF558E /* appleOS_ReactiveProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appleOS_ReactiveProperties.swift; sourceTree = "<group>"; };
+		68206CEC25152D9200EF558E /* appleOSTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = appleOSTests.swift; sourceTree = "<group>"; };
+		68206CED25152D9200EF558E /* iOSTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSTests.swift; sourceTree = "<group>"; };
+		68206CEE25152D9200EF558E /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
+		68206CEF25152D9200EF558E /* macOSTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = macOSTests.swift; sourceTree = "<group>"; };
+		68206CF025152D9200EF558E /* XCTestManifest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestManifest.swift; sourceTree = "<group>"; };
+		68206CF225152D9200EF558E /* SinglyLinkedListTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SinglyLinkedListTests.swift; sourceTree = "<group>"; };
+		68206CF325152D9200EF558E /* CancellationTokenTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationTokenTests.swift; sourceTree = "<group>"; };
+		68206CF425152D9200EF558E /* CacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheTests.swift; sourceTree = "<group>"; };
+		68206CF525152D9200EF558E /* EventSource_TransformTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_TransformTests.swift; sourceTree = "<group>"; };
+		68206CF625152D9200EF558E /* EventSource_ScanTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_ScanTests.swift; sourceTree = "<group>"; };
+		68206CF725152D9200EF558E /* ZipFuturesTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipFuturesTest.swift; sourceTree = "<group>"; };
+		68206CF825152D9200EF558E /* ObserversTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserversTests.swift; sourceTree = "<group>"; };
+		68206CF925152D9200EF558E /* BatchFutureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatchFutureTests.swift; sourceTree = "<group>"; };
+		68206CFA25152D9200EF558E /* FutureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTests.swift; sourceTree = "<group>"; };
+		68206CFB25152D9200EF558E /* TestUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestUtilities.swift; sourceTree = "<group>"; };
+		68206CFC25152D9200EF558E /* EventSource_Merge2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Merge2Tests.swift; sourceTree = "<group>"; };
+		68206CFD25152D9200EF558E /* ExecutorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutorTests.swift; sourceTree = "<group>"; };
+		68206CFE25152D9200EF558E /* ReleasePoolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleasePoolTests.swift; sourceTree = "<group>"; };
+		68206CFF25152D9200EF558E /* ExecutionContextTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContextTests.swift; sourceTree = "<group>"; };
+		68206D0025152D9200EF558E /* EventSource_ToFutureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_ToFutureTests.swift; sourceTree = "<group>"; };
+		68206D0125152D9200EF558E /* TryExecuteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TryExecuteTests.swift; sourceTree = "<group>"; };
+		68206D0225152D9200EF558E /* TimerChannelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerChannelTests.swift; sourceTree = "<group>"; };
+		68206D0325152D9200EF558E /* EventSource_CombineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_CombineTests.swift; sourceTree = "<group>"; };
+		68206D0425152D9200EF558E /* EventSource_FlatMapFuturesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_FlatMapFuturesTests.swift; sourceTree = "<group>"; };
+		68206D0525152D9200EF558E /* PerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
+		68206D0625152D9200EF558E /* CachableValueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachableValueTests.swift; sourceTree = "<group>"; };
+		68206D0725152D9200EF558E /* ChannelMakersTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelMakersTests.swift; sourceTree = "<group>"; };
+		68206D0825152D9200EF558E /* EventSource_Zip2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_Zip2Tests.swift; sourceTree = "<group>"; };
+		68206D0925152D9200EF558E /* EitherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EitherTests.swift; sourceTree = "<group>"; };
+		68206D0A25152D9200EF558E /* OptionalAdaptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalAdaptorTests.swift; sourceTree = "<group>"; };
+		68206D0B25152D9200EF558E /* Future_MakersTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future_MakersTests.swift; sourceTree = "<group>"; };
+		68206D0C25152D9200EF558E /* EventSource_MapTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSource_MapTests.swift; sourceTree = "<group>"; };
+		68206D0D25152D9200EF558E /* FallibleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FallibleTests.swift; sourceTree = "<group>"; };
+		68206D0E25152D9200EF558E /* XCTestManifest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestManifest.swift; sourceTree = "<group>"; };
+		68206D0F25152D9200EF558E /* ChannelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelTests.swift; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
-		OBJ_60 /* Zip3Futures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zip3Futures.swift; sourceTree = "<group>"; };
-		OBJ_63 /* BatchFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchFutureTests.swift; sourceTree = "<group>"; };
-		OBJ_64 /* CachableValueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachableValueTests.swift; sourceTree = "<group>"; };
-		OBJ_65 /* ChannelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelTests.swift; sourceTree = "<group>"; };
-		OBJ_66 /* EventSource_CombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_CombineTests.swift; sourceTree = "<group>"; };
-		OBJ_67 /* EventSource_FlatMapFuturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_FlatMapFuturesTests.swift; sourceTree = "<group>"; };
-		OBJ_68 /* EventSource_MapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_MapTests.swift; sourceTree = "<group>"; };
-		OBJ_69 /* EventSource_Merge2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_Merge2Tests.swift; sourceTree = "<group>"; };
-		OBJ_70 /* EventSource_ScanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_ScanTests.swift; sourceTree = "<group>"; };
-		OBJ_71 /* EventSource_ToFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_ToFutureTests.swift; sourceTree = "<group>"; };
-		OBJ_72 /* EventSource_TransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_TransformTests.swift; sourceTree = "<group>"; };
-		OBJ_73 /* EventSource_Zip2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSource_Zip2Tests.swift; sourceTree = "<group>"; };
-		OBJ_74 /* ExecutionContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutionContextTests.swift; sourceTree = "<group>"; };
-		OBJ_75 /* ExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutorTests.swift; sourceTree = "<group>"; };
-		OBJ_76 /* FallibleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallibleTests.swift; sourceTree = "<group>"; };
-		OBJ_77 /* Future_MakersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Future_MakersTests.swift; sourceTree = "<group>"; };
-		OBJ_78 /* FutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FutureTests.swift; sourceTree = "<group>"; };
-		OBJ_79 /* iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTests.swift; sourceTree = "<group>"; };
-		OBJ_8 /* appleOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleOS.swift; sourceTree = "<group>"; };
-		OBJ_80 /* ObserversTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObserversTests.swift; sourceTree = "<group>"; };
-		OBJ_81 /* ReleasePoolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleasePoolTests.swift; sourceTree = "<group>"; };
-		OBJ_82 /* TestUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestUtilities.swift; sourceTree = "<group>"; };
-		OBJ_83 /* TimerChannelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerChannelTests.swift; sourceTree = "<group>"; };
-		OBJ_84 /* XCTestManifest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTestManifest.swift; sourceTree = "<group>"; };
-		OBJ_85 /* ZipFuturesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipFuturesTest.swift; sourceTree = "<group>"; };
 		OBJ_86 /* Documentation */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Documentation; sourceTree = SOURCE_ROOT; };
 		OBJ_88 /* AsyncNinja.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AsyncNinja.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_89 /* AsyncNinjaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = AsyncNinjaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		OBJ_9 /* appleOS_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleOS_CoreData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -244,6 +263,145 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		68206C5525152AD200EF558E /* AsyncNinja */ = {
+			isa = PBXGroup;
+			children = (
+				68206C5625152AD200EF558E /* CachableValue.swift */,
+				68206C5725152AD200EF558E /* EventSource_Combine.swift */,
+				68206C5825152AD200EF558E /* Sequence_AsyncMap.swift */,
+				68206C5925152AD200EF558E /* Fallible.swift */,
+				68206C5A25152AD200EF558E /* Channel_makers.swift */,
+				68206C5B25152AD200EF558E /* KeyProtocols.swift */,
+				68206C5C25152AD200EF558E /* Executor.swift */,
+				68206C5D25152AD200EF558E /* Either.swift */,
+				68206C5E25152AD200EF558E /* appleOS_CoreData.swift */,
+				68206C5F25152AD200EF558E /* macOS.swift */,
+				68206C6025152AD200EF558E /* EventSource_StartWith.swift */,
+				68206C6125152AD200EF558E /* Completable_Implementation.swift */,
+				68206C6225152AD200EF558E /* Sequence_AsyncReduce.swift */,
+				68206C6325152AD200EF558E /* ReleasePool.swift */,
+				68206C6425152AD200EF558E /* Producer.swift */,
+				68206C6525152AD200EF558E /* Stack.swift */,
+				68206C6625152AD200EF558E /* EventSource_CombineLatests.swift */,
+				68206C6725152AD200EF558E /* Future.swift */,
+				68206C6825152AD200EF558E /* EventSource_Scan.swift */,
+				68206C6925152AD200EF558E /* appleOS_Observation.swift */,
+				68206C6A25152AD200EF558E /* TryExecute.swift */,
+				68206C6B25152AD200EF558E /* EventSource_Transform.swift */,
+				68206C6C25152AD200EF558E /* appleOS.swift */,
+				68206C6D25152AD200EF558E /* EventSource_Merge2.swift */,
+				68206C6E25152AD200EF558E /* Zip3Futures.swift */,
+				68206C6F25152AD200EF558E /* appleOS_ExecutionContext.swift */,
+				68206C7025152AD200EF558E /* EventSource_Debounce.swift */,
+				68206C7125152AD200EF558E /* Dispatch_Extensions.swift */,
+				68206C7225152AD200EF558E /* appleOS_Retainer.swift */,
+				68206C7325152AD200EF558E /* SinglyLinkedList.swift */,
+				68206C7425152AD200EF558E /* ProducerProxy.swift */,
+				68206C7525152AD200EF558E /* Channel.swift */,
+				68206C7625152AD200EF558E /* Zip2Futures.swift */,
+				68206C7725152AD200EF558E /* EventSource_Zip2.swift */,
+				68206C7825152AD200EF558E /* Sink.swift */,
+				68206C7925152AD200EF558E /* appleOS_URLSession.swift */,
+				68206C7A25152AD200EF558E /* TimerChannel.swift */,
+				68206C7B25152AD200EF558E /* EventSource_ifEmpty.swift */,
+				68206C7C25152AD200EF558E /* Box.swift */,
+				68206C7D25152AD200EF558E /* PropertyWrappers.swift */,
+				68206C7E25152AD200EF558E /* EventSource_Sample.swift */,
+				68206C7F25152AD200EF558E /* Producer_makers.swift */,
+				68206C8025152AD200EF558E /* ExecutionContext.swift */,
+				68206C8125152AD200EF558E /* BaseProducer.swift */,
+				68206C8225152AD200EF558E /* MergeFutures.swift */,
+				68206C8325152AD200EF558E /* Util.swift */,
+				68206C8425152AD200EF558E /* Future_Makers.swift */,
+				68206C8525152AD200EF558E /* Sequence_AsyncFlatMap.swift */,
+				68206C8625152AD200EF558E /* appleOS_Notifications.swift */,
+				68206C8725152AD200EF558E /* Cache.swift */,
+				68206C8825152AD200EF558E /* watchOS.swift */,
+				68206C8925152AD200EF558E /* Promise.swift */,
+				68206C8A25152AD200EF558E /* Queue.swift */,
+				68206C8B25152AD200EF558E /* EventSource_Implementation.swift */,
+				68206C8C25152AD200EF558E /* EventSource_Throttle.swift */,
+				68206C8D25152AD200EF558E /* OptionalAdaptor.swift */,
+				68206C8E25152AD200EF558E /* Debug.swift */,
+				68206C8F25152AD200EF558E /* EventSource_Merge2Unrelated.swift */,
+				68206C9025152AD200EF558E /* Completing_Implementation.swift */,
+				68206C9125152AD200EF558E /* EventSource_FlatMapFutures.swift */,
+				68206C9225152AD200EF558E /* Promise_makers.swift */,
+				68206C9325152AD200EF558E /* EventSource_Map.swift */,
+				68206C9425152AD200EF558E /* EventSource_ToFuture.swift */,
+				68206C9525152AD200EF558E /* CancellationToken.swift */,
+				68206C9625152AD200EF558E /* NetworkReachability.swift */,
+				68206C9725152AD200EF558E /* DynamicProperty.swift */,
+				68206C9825152AD200EF558E /* Completing_Transform.swift */,
+				68206C9925152AD200EF558E /* EventSource_Concat.swift */,
+				68206C9A25152AD200EF558E /* Locking.swift */,
+				68206C9B25152AD200EF558E /* ConstantFuture.swift */,
+			);
+			path = AsyncNinja;
+			sourceTree = "<group>";
+		};
+		68206CE225152AED00EF558E /* AsyncNinjaReactiveUI */ = {
+			isa = PBXGroup;
+			children = (
+				68206CE325152AED00EF558E /* macOS_ReactiveProperties.swift */,
+				68206CE425152AED00EF558E /* macOS_BindingsProxy.swift */,
+				68206CE525152AED00EF558E /* iOS.swift */,
+				68206CE625152AED00EF558E /* appleOS_ReactiveProperties.swift */,
+			);
+			path = AsyncNinjaReactiveUI;
+			sourceTree = "<group>";
+		};
+		68206CEB25152D9200EF558E /* AsyncNinjaReactiveUI */ = {
+			isa = PBXGroup;
+			children = (
+				68206CEC25152D9200EF558E /* appleOSTests.swift */,
+				68206CED25152D9200EF558E /* iOSTests.swift */,
+				68206CEE25152D9200EF558E /* Fixtures.swift */,
+				68206CEF25152D9200EF558E /* macOSTests.swift */,
+				68206CF025152D9200EF558E /* XCTestManifest.swift */,
+			);
+			name = AsyncNinjaReactiveUI;
+			path = Tests/AsyncNinjaReactiveUI;
+			sourceTree = "<group>";
+		};
+		68206CF125152D9200EF558E /* AsyncNinja */ = {
+			isa = PBXGroup;
+			children = (
+				68206CF225152D9200EF558E /* SinglyLinkedListTests.swift */,
+				68206CF325152D9200EF558E /* CancellationTokenTests.swift */,
+				68206CF425152D9200EF558E /* CacheTests.swift */,
+				68206CF525152D9200EF558E /* EventSource_TransformTests.swift */,
+				68206CF625152D9200EF558E /* EventSource_ScanTests.swift */,
+				68206CF725152D9200EF558E /* ZipFuturesTest.swift */,
+				68206CF825152D9200EF558E /* ObserversTests.swift */,
+				68206CF925152D9200EF558E /* BatchFutureTests.swift */,
+				68206CFA25152D9200EF558E /* FutureTests.swift */,
+				68206CFB25152D9200EF558E /* TestUtilities.swift */,
+				68206CFC25152D9200EF558E /* EventSource_Merge2Tests.swift */,
+				68206CFD25152D9200EF558E /* ExecutorTests.swift */,
+				68206CFE25152D9200EF558E /* ReleasePoolTests.swift */,
+				68206CFF25152D9200EF558E /* ExecutionContextTests.swift */,
+				68206D0025152D9200EF558E /* EventSource_ToFutureTests.swift */,
+				68206D0125152D9200EF558E /* TryExecuteTests.swift */,
+				68206D0225152D9200EF558E /* TimerChannelTests.swift */,
+				68206D0325152D9200EF558E /* EventSource_CombineTests.swift */,
+				68206D0425152D9200EF558E /* EventSource_FlatMapFuturesTests.swift */,
+				68206D0525152D9200EF558E /* PerformanceTests.swift */,
+				68206D0625152D9200EF558E /* CachableValueTests.swift */,
+				68206D0725152D9200EF558E /* ChannelMakersTests.swift */,
+				68206D0825152D9200EF558E /* EventSource_Zip2Tests.swift */,
+				68206D0925152D9200EF558E /* EitherTests.swift */,
+				68206D0A25152D9200EF558E /* OptionalAdaptorTests.swift */,
+				68206D0B25152D9200EF558E /* Future_MakersTests.swift */,
+				68206D0C25152D9200EF558E /* EventSource_MapTests.swift */,
+				68206D0D25152D9200EF558E /* FallibleTests.swift */,
+				68206D0E25152D9200EF558E /* XCTestManifest.swift */,
+				68206D0F25152D9200EF558E /* ChannelTests.swift */,
+			);
+			name = AsyncNinja;
+			path = Tests/AsyncNinja;
+			sourceTree = "<group>";
+		};
 		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
@@ -258,121 +416,17 @@
 		OBJ_61 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_62 /* AsyncNinjaTests */,
+				68206CF125152D9200EF558E /* AsyncNinja */,
+				68206CEB25152D9200EF558E /* AsyncNinjaReactiveUI */,
 			);
 			name = Tests;
-			sourceTree = SOURCE_ROOT;
-		};
-		OBJ_62 /* AsyncNinjaTests */ = {
-			isa = PBXGroup;
-			children = (
-				F812B7A521DEE6DC00571A07 /* appleOSTests.swift */,
-				OBJ_63 /* BatchFutureTests.swift */,
-				OBJ_64 /* CachableValueTests.swift */,
-				F8419BD91E913B580067701C /* CacheTests.swift */,
-				F8419BD31E90FCB60067701C /* CancellationTokenTests.swift */,
-				OBJ_65 /* ChannelTests.swift */,
-				F8419BD71E911CF00067701C /* ChannelMakersTests.swift */,
-				F8419BD51E9108090067701C /* EitherTests.swift */,
-				OBJ_66 /* EventSource_CombineTests.swift */,
-				OBJ_67 /* EventSource_FlatMapFuturesTests.swift */,
-				OBJ_68 /* EventSource_MapTests.swift */,
-				OBJ_69 /* EventSource_Merge2Tests.swift */,
-				OBJ_70 /* EventSource_ScanTests.swift */,
-				OBJ_71 /* EventSource_ToFutureTests.swift */,
-				OBJ_72 /* EventSource_TransformTests.swift */,
-				OBJ_73 /* EventSource_Zip2Tests.swift */,
-				OBJ_74 /* ExecutionContextTests.swift */,
-				OBJ_75 /* ExecutorTests.swift */,
-				OBJ_76 /* FallibleTests.swift */,
-				F88DBFF61EC3A29000FC589E /* Fixtures.swift */,
-				OBJ_77 /* Future_MakersTests.swift */,
-				OBJ_78 /* FutureTests.swift */,
-				OBJ_79 /* iOSTests.swift */,
-				F812B7A721DEE91200571A07 /* macOSTests.swift */,
-				OBJ_80 /* ObserversTests.swift */,
-				F81A3EB41EA232DE009B0144 /* OptionalAdaptorTests.swift */,
-				B8DC12831ED093C60099893A /* PerformanceTests.swift */,
-				B87378DF1F67EA5900B6FF97 /* SinglyLinkedListTests.swift */,
-				OBJ_81 /* ReleasePoolTests.swift */,
-				OBJ_82 /* TestUtilities.swift */,
-				F86BE0621E983DF5008B7BDC /* TryExecuteTests.swift */,
-				OBJ_83 /* TimerChannelTests.swift */,
-				OBJ_84 /* XCTestManifest.swift */,
-				OBJ_85 /* ZipFuturesTest.swift */,
-			);
-			name = AsyncNinjaTests;
-			path = Tests/AsyncNinjaTests;
 			sourceTree = SOURCE_ROOT;
 		};
 		OBJ_7 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_8 /* appleOS.swift */,
-				OBJ_9 /* appleOS_CoreData.swift */,
-				OBJ_10 /* appleOS_ExecutionContext.swift */,
-				OBJ_11 /* appleOS_Notifications.swift */,
-				OBJ_12 /* appleOS_Observation.swift */,
-				OBJ_13 /* appleOS_ReactiveProperties.swift */,
-				OBJ_14 /* appleOS_Retainer.swift */,
-				OBJ_15 /* appleOS_URLSession.swift */,
-				OBJ_16 /* BaseProducer.swift */,
-				B8C99AC21F5C742000E16257 /* Box.swift */,
-				OBJ_17 /* CachableValue.swift */,
-				OBJ_18 /* Cache.swift */,
-				OBJ_19 /* CancellationToken.swift */,
-				OBJ_20 /* Channel.swift */,
-				OBJ_21 /* Channel_makers.swift */,
-				OBJ_22 /* Completable_Implementation.swift */,
-				OBJ_23 /* Completing_Implementation.swift */,
-				OBJ_24 /* Completing_Transform.swift */,
-				OBJ_25 /* ConstantFuture.swift */,
-				OBJ_26 /* Dispatch_Extensions.swift */,
-				F812B7A321DEDC4E00571A07 /* Debug.swift */,
-				OBJ_27 /* DynamicProperty.swift */,
-				F819DC171E8A9F2A0072E0B1 /* Either.swift */,
-				OBJ_28 /* EventSource_Combine.swift */,
-				B8B520211EBF2918006C27DA /* EventSource_Debounce.swift */,
-				OBJ_29 /* EventSource_FlatMapFutures.swift */,
-				OBJ_30 /* EventSource_Implementation.swift */,
-				OBJ_31 /* EventSource_Map.swift */,
-				OBJ_32 /* EventSource_Merge2.swift */,
-				B8B5201F1EBF1604006C27DA /* EventSource_Merge2Unrelated.swift */,
-				B8B5201D1EBF0D18006C27DA /* EventSource_Sample.swift */,
-				OBJ_33 /* EventSource_Scan.swift */,
-				OBJ_34 /* EventSource_ToFuture.swift */,
-				OBJ_35 /* EventSource_Transform.swift */,
-				OBJ_36 /* EventSource_Zip2.swift */,
-				OBJ_37 /* ExecutionContext.swift */,
-				OBJ_38 /* Executor.swift */,
-				OBJ_39 /* Fallible.swift */,
-				OBJ_40 /* Future.swift */,
-				OBJ_41 /* Future_Makers.swift */,
-				OBJ_42 /* iOS.swift */,
-				OBJ_43 /* KeyProtocols.swift */,
-				OBJ_44 /* Locking.swift */,
-				OBJ_45 /* macOS.swift */,
-				F812B7AA21E0E5CE00571A07 /* macOS_BindingsProxy.swift */,
-				OBJ_46 /* MergeFutures.swift */,
-				F87E09211E9C337F006CD1C9 /* NetworkReachability.swift */,
-				OBJ_47 /* OptionalAdaptor.swift */,
-				B87EC5CB1F6D565900ABBBE8 /* Queue.swift */,
-				OBJ_48 /* Producer.swift */,
-				OBJ_49 /* ProducerProxy.swift */,
-				OBJ_50 /* Promise.swift */,
-				OBJ_52 /* ReleasePool.swift */,
-				B8B520231EBF2F54006C27DA /* Sequence_AsyncFlatMap.swift */,
-				OBJ_53 /* Sequence_AsyncMap.swift */,
-				B8B520251EBF3287006C27DA /* Sequence_AsyncReduce.swift */,
-				B873DAB51F6D04BD00A04524 /* SinglyLinkedList.swift */,
-				OBJ_54 /* Sink.swift */,
-				B87EC5CD1F6D687700ABBBE8 /* Stack.swift */,
-				OBJ_56 /* TimerChannel.swift */,
-				F85659561E97D7FE007EDC98 /* TryExecute.swift */,
-				OBJ_57 /* Util.swift */,
-				OBJ_58 /* watchOS.swift */,
-				OBJ_59 /* Zip2Futures.swift */,
-				OBJ_60 /* Zip3Futures.swift */,
+				68206CE225152AED00EF558E /* AsyncNinjaReactiveUI */,
+				68206C5525152AD200EF558E /* AsyncNinja */,
 			);
 			path = Sources;
 			sourceTree = SOURCE_ROOT;
@@ -480,40 +534,40 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_154 /* BatchFutureTests.swift in Sources */,
-				F8419BD61E91080A0067701C /* EitherTests.swift in Sources */,
-				OBJ_155 /* CachableValueTests.swift in Sources */,
-				B87378E01F67EA5900B6FF97 /* SinglyLinkedListTests.swift in Sources */,
-				OBJ_156 /* ChannelTests.swift in Sources */,
-				OBJ_157 /* EventSource_CombineTests.swift in Sources */,
-				OBJ_158 /* EventSource_FlatMapFuturesTests.swift in Sources */,
-				OBJ_159 /* EventSource_MapTests.swift in Sources */,
-				OBJ_160 /* EventSource_Merge2Tests.swift in Sources */,
-				OBJ_161 /* EventSource_ScanTests.swift in Sources */,
-				B8DC12851ED093CF0099893A /* PerformanceTests.swift in Sources */,
-				OBJ_162 /* EventSource_ToFutureTests.swift in Sources */,
-				OBJ_163 /* EventSource_TransformTests.swift in Sources */,
-				OBJ_164 /* EventSource_Zip2Tests.swift in Sources */,
-				F812B7A621DEE6DC00571A07 /* appleOSTests.swift in Sources */,
-				OBJ_165 /* ExecutionContextTests.swift in Sources */,
-				F86BE0641E983E20008B7BDC /* TryExecuteTests.swift in Sources */,
-				OBJ_166 /* ExecutorTests.swift in Sources */,
-				F8419BDA1E913B580067701C /* CacheTests.swift in Sources */,
-				F8419BD81E911CF00067701C /* ChannelMakersTests.swift in Sources */,
-				OBJ_167 /* FallibleTests.swift in Sources */,
-				OBJ_168 /* Future_MakersTests.swift in Sources */,
-				OBJ_169 /* FutureTests.swift in Sources */,
-				F8419BD41E90FCB60067701C /* CancellationTokenTests.swift in Sources */,
-				OBJ_170 /* iOSTests.swift in Sources */,
-				F812B7A821DEE91200571A07 /* macOSTests.swift in Sources */,
-				OBJ_171 /* ObserversTests.swift in Sources */,
-				F88DBFF81EC3A3B700FC589E /* Fixtures.swift in Sources */,
-				OBJ_172 /* ReleasePoolTests.swift in Sources */,
-				OBJ_173 /* TestUtilities.swift in Sources */,
-				F81A3EB51EA232DE009B0144 /* OptionalAdaptorTests.swift in Sources */,
-				OBJ_174 /* TimerChannelTests.swift in Sources */,
-				OBJ_175 /* XCTestManifest.swift in Sources */,
-				OBJ_176 /* ZipFuturesTest.swift in Sources */,
+				68206D1C25152D9200EF558E /* BatchFutureTests.swift in Sources */,
+				68206D1B25152D9200EF558E /* ObserversTests.swift in Sources */,
+				68206D2B25152D9200EF558E /* EventSource_Zip2Tests.swift in Sources */,
+				68206D2225152D9200EF558E /* ExecutionContextTests.swift in Sources */,
+				68206D1A25152D9200EF558E /* ZipFuturesTest.swift in Sources */,
+				68206D3025152D9200EF558E /* FallibleTests.swift in Sources */,
+				68206D2525152D9200EF558E /* TimerChannelTests.swift in Sources */,
+				68206D2825152D9200EF558E /* PerformanceTests.swift in Sources */,
+				68206D1825152D9200EF558E /* EventSource_TransformTests.swift in Sources */,
+				68206D1125152D9200EF558E /* iOSTests.swift in Sources */,
+				68206D3225152D9200EF558E /* ChannelTests.swift in Sources */,
+				68206D2C25152D9200EF558E /* EitherTests.swift in Sources */,
+				68206D2D25152D9200EF558E /* OptionalAdaptorTests.swift in Sources */,
+				68206D2725152D9200EF558E /* EventSource_FlatMapFuturesTests.swift in Sources */,
+				68206D2925152D9200EF558E /* CachableValueTests.swift in Sources */,
+				68206D2F25152D9200EF558E /* EventSource_MapTests.swift in Sources */,
+				68206D2025152D9200EF558E /* ExecutorTests.swift in Sources */,
+				68206D1D25152D9200EF558E /* FutureTests.swift in Sources */,
+				68206D1F25152D9200EF558E /* EventSource_Merge2Tests.swift in Sources */,
+				68206D2125152D9200EF558E /* ReleasePoolTests.swift in Sources */,
+				68206D2325152D9200EF558E /* EventSource_ToFutureTests.swift in Sources */,
+				68206D2425152D9200EF558E /* TryExecuteTests.swift in Sources */,
+				68206D1525152D9200EF558E /* SinglyLinkedListTests.swift in Sources */,
+				68206D2625152D9200EF558E /* EventSource_CombineTests.swift in Sources */,
+				68206D2E25152D9200EF558E /* Future_MakersTests.swift in Sources */,
+				68206D1925152D9200EF558E /* EventSource_ScanTests.swift in Sources */,
+				68206D1E25152D9200EF558E /* TestUtilities.swift in Sources */,
+				68206D1625152D9200EF558E /* CancellationTokenTests.swift in Sources */,
+				68206D1225152D9200EF558E /* Fixtures.swift in Sources */,
+				68206D1025152D9200EF558E /* appleOSTests.swift in Sources */,
+				68206D1725152D9200EF558E /* CacheTests.swift in Sources */,
+				68206D2A25152D9200EF558E /* ChannelMakersTests.swift in Sources */,
+				68206D1325152D9200EF558E /* macOSTests.swift in Sources */,
+				68206D3125152D9200EF558E /* XCTestManifest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,71 +575,80 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_95 /* appleOS.swift in Sources */,
-				OBJ_96 /* appleOS_CoreData.swift in Sources */,
-				OBJ_97 /* appleOS_ExecutionContext.swift in Sources */,
-				OBJ_98 /* appleOS_Notifications.swift in Sources */,
-				OBJ_99 /* appleOS_Observation.swift in Sources */,
-				OBJ_100 /* appleOS_ReactiveProperties.swift in Sources */,
-				OBJ_101 /* appleOS_Retainer.swift in Sources */,
-				OBJ_102 /* appleOS_URLSession.swift in Sources */,
-				OBJ_103 /* BaseProducer.swift in Sources */,
-				OBJ_104 /* CachableValue.swift in Sources */,
-				OBJ_105 /* Cache.swift in Sources */,
-				OBJ_106 /* CancellationToken.swift in Sources */,
-				OBJ_107 /* Channel.swift in Sources */,
-				F812B7A421DEDC4E00571A07 /* Debug.swift in Sources */,
-				OBJ_108 /* Channel_makers.swift in Sources */,
-				F87E09221E9C337F006CD1C9 /* NetworkReachability.swift in Sources */,
-				B8B520221EBF2918006C27DA /* EventSource_Debounce.swift in Sources */,
-				OBJ_109 /* Completable_Implementation.swift in Sources */,
-				F85659571E97D7FE007EDC98 /* TryExecute.swift in Sources */,
-				OBJ_110 /* Completing_Implementation.swift in Sources */,
-				F819DC181E8A9F2A0072E0B1 /* Either.swift in Sources */,
-				OBJ_111 /* Completing_Transform.swift in Sources */,
-				OBJ_112 /* ConstantFuture.swift in Sources */,
-				OBJ_113 /* Dispatch_Extensions.swift in Sources */,
-				F812B7AC21E0E78C00571A07 /* macOS_BindingsProxy.swift in Sources */,
-				OBJ_114 /* DynamicProperty.swift in Sources */,
-				OBJ_115 /* EventSource_Combine.swift in Sources */,
-				OBJ_116 /* EventSource_FlatMapFutures.swift in Sources */,
-				OBJ_117 /* EventSource_Implementation.swift in Sources */,
-				OBJ_118 /* EventSource_Map.swift in Sources */,
-				OBJ_119 /* EventSource_Merge2.swift in Sources */,
-				OBJ_120 /* EventSource_Scan.swift in Sources */,
-				OBJ_121 /* EventSource_ToFuture.swift in Sources */,
-				OBJ_122 /* EventSource_Transform.swift in Sources */,
-				B8B5201E1EBF0D18006C27DA /* EventSource_Sample.swift in Sources */,
-				OBJ_123 /* EventSource_Zip2.swift in Sources */,
-				OBJ_124 /* ExecutionContext.swift in Sources */,
-				OBJ_125 /* Executor.swift in Sources */,
-				OBJ_126 /* Fallible.swift in Sources */,
-				B87EC5CE1F6D687700ABBBE8 /* Stack.swift in Sources */,
-				OBJ_127 /* Future.swift in Sources */,
-				OBJ_128 /* Future_Makers.swift in Sources */,
-				OBJ_129 /* iOS.swift in Sources */,
-				OBJ_130 /* KeyProtocols.swift in Sources */,
-				OBJ_131 /* Locking.swift in Sources */,
-				OBJ_132 /* macOS.swift in Sources */,
-				OBJ_133 /* MergeFutures.swift in Sources */,
-				OBJ_134 /* OptionalAdaptor.swift in Sources */,
-				B8B520241EBF2F54006C27DA /* Sequence_AsyncFlatMap.swift in Sources */,
-				OBJ_135 /* Producer.swift in Sources */,
-				OBJ_136 /* ProducerProxy.swift in Sources */,
-				B8B520201EBF1604006C27DA /* EventSource_Merge2Unrelated.swift in Sources */,
-				OBJ_137 /* Promise.swift in Sources */,
-				OBJ_139 /* ReleasePool.swift in Sources */,
-				B87EC5CC1F6D565900ABBBE8 /* Queue.swift in Sources */,
-				OBJ_140 /* Sequence_AsyncMap.swift in Sources */,
-				B8B520261EBF3287006C27DA /* Sequence_AsyncReduce.swift in Sources */,
-				OBJ_141 /* Sink.swift in Sources */,
-				OBJ_143 /* TimerChannel.swift in Sources */,
-				OBJ_144 /* Util.swift in Sources */,
-				OBJ_145 /* watchOS.swift in Sources */,
-				B8C99AC31F5C742000E16257 /* Box.swift in Sources */,
-				B873DAB61F6D04BD00A04524 /* SinglyLinkedList.swift in Sources */,
-				OBJ_146 /* Zip2Futures.swift in Sources */,
-				OBJ_147 /* Zip3Futures.swift in Sources */,
+				68206CDA25152AD200EF558E /* EventSource_ToFuture.swift in Sources */,
+				68206CD825152AD200EF558E /* Promise_makers.swift in Sources */,
+				68206CAB25152AD200EF558E /* Stack.swift in Sources */,
+				68206CB425152AD200EF558E /* Zip3Futures.swift in Sources */,
+				68206CE025152AD200EF558E /* Locking.swift in Sources */,
+				68206CAD25152AD200EF558E /* Future.swift in Sources */,
+				68206CBB25152AD200EF558E /* Channel.swift in Sources */,
+				68206CC725152AD200EF558E /* BaseProducer.swift in Sources */,
+				68206CB725152AD200EF558E /* Dispatch_Extensions.swift in Sources */,
+				68206CBC25152AD200EF558E /* Zip2Futures.swift in Sources */,
+				68206CD625152AD200EF558E /* Completing_Implementation.swift in Sources */,
+				68206CA625152AD200EF558E /* EventSource_StartWith.swift in Sources */,
+				68206CD325152AD200EF558E /* OptionalAdaptor.swift in Sources */,
+				68206C9C25152AD200EF558E /* CachableValue.swift in Sources */,
+				68206CBD25152AD200EF558E /* EventSource_Zip2.swift in Sources */,
+				68206CAC25152AD200EF558E /* EventSource_CombineLatests.swift in Sources */,
+				68206CB625152AD200EF558E /* EventSource_Debounce.swift in Sources */,
+				68206CD725152AD200EF558E /* EventSource_FlatMapFutures.swift in Sources */,
+				68206CA425152AD200EF558E /* appleOS_CoreData.swift in Sources */,
+				68206CC125152AD200EF558E /* EventSource_ifEmpty.swift in Sources */,
+				68206CE925152AED00EF558E /* iOS.swift in Sources */,
+				68206CD125152AD200EF558E /* EventSource_Implementation.swift in Sources */,
+				68206CCC25152AD200EF558E /* appleOS_Notifications.swift in Sources */,
+				68206CE825152AED00EF558E /* macOS_BindingsProxy.swift in Sources */,
+				68206CB025152AD200EF558E /* TryExecute.swift in Sources */,
+				68206CD525152AD200EF558E /* EventSource_Merge2Unrelated.swift in Sources */,
+				68206CA525152AD200EF558E /* macOS.swift in Sources */,
+				68206CCD25152AD200EF558E /* Cache.swift in Sources */,
+				68206CAF25152AD200EF558E /* appleOS_Observation.swift in Sources */,
+				68206CC225152AD200EF558E /* Box.swift in Sources */,
+				68206CC825152AD200EF558E /* MergeFutures.swift in Sources */,
+				68206CB325152AD200EF558E /* EventSource_Merge2.swift in Sources */,
+				68206CDC25152AD200EF558E /* NetworkReachability.swift in Sources */,
+				68206CB525152AD200EF558E /* appleOS_ExecutionContext.swift in Sources */,
+				68206CEA25152AED00EF558E /* appleOS_ReactiveProperties.swift in Sources */,
+				68206CCF25152AD200EF558E /* Promise.swift in Sources */,
+				68206CDF25152AD200EF558E /* EventSource_Concat.swift in Sources */,
+				68206CD225152AD200EF558E /* EventSource_Throttle.swift in Sources */,
+				68206CA925152AD200EF558E /* ReleasePool.swift in Sources */,
+				68206CDE25152AD200EF558E /* Completing_Transform.swift in Sources */,
+				68206CBA25152AD200EF558E /* ProducerProxy.swift in Sources */,
+				68206CCB25152AD200EF558E /* Sequence_AsyncFlatMap.swift in Sources */,
+				68206CC525152AD200EF558E /* Producer_makers.swift in Sources */,
+				68206C9F25152AD200EF558E /* Fallible.swift in Sources */,
+				68206CD425152AD200EF558E /* Debug.swift in Sources */,
+				68206CA325152AD200EF558E /* Either.swift in Sources */,
+				68206CCE25152AD200EF558E /* watchOS.swift in Sources */,
+				68206CE725152AED00EF558E /* macOS_ReactiveProperties.swift in Sources */,
+				68206CC325152AD200EF558E /* PropertyWrappers.swift in Sources */,
+				68206CBF25152AD200EF558E /* appleOS_URLSession.swift in Sources */,
+				68206CBE25152AD200EF558E /* Sink.swift in Sources */,
+				68206CD025152AD200EF558E /* Queue.swift in Sources */,
+				68206CB925152AD200EF558E /* SinglyLinkedList.swift in Sources */,
+				68206CDB25152AD200EF558E /* CancellationToken.swift in Sources */,
+				68206CB225152AD200EF558E /* appleOS.swift in Sources */,
+				68206CA125152AD200EF558E /* KeyProtocols.swift in Sources */,
+				68206CC025152AD200EF558E /* TimerChannel.swift in Sources */,
+				68206CAE25152AD200EF558E /* EventSource_Scan.swift in Sources */,
+				68206CB825152AD200EF558E /* appleOS_Retainer.swift in Sources */,
+				68206CB125152AD200EF558E /* EventSource_Transform.swift in Sources */,
+				68206CA725152AD200EF558E /* Completable_Implementation.swift in Sources */,
+				68206CCA25152AD200EF558E /* Future_Makers.swift in Sources */,
+				68206CC925152AD200EF558E /* Util.swift in Sources */,
+				68206CA025152AD200EF558E /* Channel_makers.swift in Sources */,
+				68206CC425152AD200EF558E /* EventSource_Sample.swift in Sources */,
+				68206C9D25152AD200EF558E /* EventSource_Combine.swift in Sources */,
+				68206CDD25152AD200EF558E /* DynamicProperty.swift in Sources */,
+				68206CA225152AD200EF558E /* Executor.swift in Sources */,
+				68206CD925152AD200EF558E /* EventSource_Map.swift in Sources */,
+				68206CA825152AD200EF558E /* Sequence_AsyncReduce.swift in Sources */,
+				68206CE125152AD200EF558E /* ConstantFuture.swift in Sources */,
+				68206C9E25152AD200EF558E /* Sequence_AsyncMap.swift in Sources */,
+				68206CAA25152AD200EF558E /* Producer.swift in Sources */,
+				68206CC625152AD200EF558E /* ExecutionContext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,12 +675,11 @@
 				GCC_OPTIMIZATION_LEVEL = s;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_SWIFT_FLAGS = "-DXcode -Xfrontend -warn-long-function-bodies=200";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				USE_HEADERMAP = NO;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
@@ -677,12 +739,11 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_SWIFT_FLAGS = "-DXcode -Xfrontend -warn-long-function-bodies=200";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				USE_HEADERMAP = NO;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
@@ -778,13 +839,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_SWIFT_FLAGS = "-DXcode -Xfrontend -warn-long-function-bodies=200";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				USE_HEADERMAP = NO;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
@@ -803,13 +863,12 @@
 				GCC_OPTIMIZATION_LEVEL = s;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_SWIFT_FLAGS = "-DXcode -Xfrontend -warn-long-function-bodies=200";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				USE_HEADERMAP = NO;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
