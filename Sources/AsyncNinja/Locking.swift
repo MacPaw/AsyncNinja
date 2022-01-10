@@ -26,7 +26,7 @@ import Dispatch
 #endif
 
 /// Context indepedent locking. Non-recursive.
-public protocol Locking: class {
+public protocol Locking: AnyObject {
 
   /// Locks. Be sure to balance with unlock
   func lock()

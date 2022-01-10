@@ -22,6 +22,7 @@
 
 #if os(macOS)
 
+import AsyncNinja
 import AppKit
 
 class BindingProxy: NSObject, ObservationSessionItem {

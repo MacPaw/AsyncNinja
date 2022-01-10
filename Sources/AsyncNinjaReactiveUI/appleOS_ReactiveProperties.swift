@@ -20,6 +20,8 @@
 //  IN THE SOFTWARE.
 //
 
+import AsyncNinja
+
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 
 /// `ReactiveProperties` is an adaptor for reactive properties.

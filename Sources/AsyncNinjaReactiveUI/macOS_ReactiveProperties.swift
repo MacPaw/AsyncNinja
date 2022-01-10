@@ -22,6 +22,7 @@
 
 #if os(macOS)
 
+import AsyncNinja
 import AppKit
 
 // MARK: - reactive properties for NSView

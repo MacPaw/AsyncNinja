@@ -207,6 +207,7 @@ public extension Completing {
       sema.signal()
     }
     defer { handler = nil }
+    _ = handler
 
     switch waitingBlock(sema) {
     case .success: return result
