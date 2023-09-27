@@ -59,10 +59,11 @@ class AtomicMutableBox<T> {
     }
   }
   private var _value: T
-  private var _locking = makeLocking()
+  private var _locking: Locking
 
-  init(_ value: T) {
+  init(_ value: T, isFair: Bool = false) {
     _value = value
+    _locking = makeLocking(isFair: isFair)
   }
 }
 
