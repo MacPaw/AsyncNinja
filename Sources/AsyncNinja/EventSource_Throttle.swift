@@ -27,18 +27,20 @@ public enum AfterThrottling {
   case sendFirst
   case none
 }
- 
+
 public struct ThrottleOptions {
-  let qos:                DispatchQoS.QoSClass
-  let cancellationToken:  CancellationToken?
-  let bufferSize:         DerivedChannelBufferSize
+  let qos: DispatchQoS.QoSClass
+  let cancellationToken: CancellationToken?
+  let bufferSize: DerivedChannelBufferSize
 
   /// - parameter qos: quality of service.
   /// - parameter cancellationToken: `CancellationToken` to use. Keep default value of the argument unless you need an extended cancellation options of returned primitive
   /// - parameter bufferSize: `DerivedChannelBufferSize` of derived channel. Keep default value of the argument unless you need
-  public init(qos: DispatchQoS.QoSClass = .default,
-              cancellationToken: CancellationToken? = nil,
-              bufferSize: DerivedChannelBufferSize = .default) {
+  public init(
+    qos: DispatchQoS.QoSClass = .default,
+    cancellationToken: CancellationToken? = nil,
+    bufferSize: DerivedChannelBufferSize = .default
+  ) {
     self.qos = qos
     self.cancellationToken = cancellationToken
     self.bufferSize = bufferSize
@@ -46,7 +48,7 @@ public struct ThrottleOptions {
 }
 
 public extension EventSource {
-  
+
   /**
    Returns an Channel that emits the first and the latest item emitted by the EventSource during interval.
    
@@ -62,15 +64,20 @@ public extension EventSource {
     options: ThrottleOptions = ThrottleOptions()
     ) -> Channel<Update, Success> {
     // Test: EventSource_TransformTests.testTrottle
-    
+
     typealias Destination = Producer<Update, Success>
     let producer = Destination(bufferSize: options.bufferSize.bufferSize(self))
     options.cancellationToken?.add(cancellable: producer)
-    
-    let helper = ThrottleEventSourceHelper<Self, Destination>(destination: producer, interval: interval, qos: options.qos, after: after)
-    
+
+    let helper = ThrottleEventSourceHelper<Self, Destination>(
+      destination: producer,
+      interval: interval,
+      qos: options.qos,
+      after: after
+    )
+
     producer._asyncNinja_retainHandlerUntilFinalization(helper.eventHandler(source: self))
-    
+
     return producer
   }
 }
@@ -79,44 +86,44 @@ private class ThrottleEventSourceHelper<Source: EventSource, Destination: EventD
 where Source.Update == Destination.Update, Source.Success == Destination.Success {
   var locking = makeLocking()
   let after: AfterThrottling
-  var nextUpdate : Source.Update?
+  var nextUpdate: Source.Update?
   let queue: DispatchQueue
   var timer: DispatchSourceTimer?
   var timerInterval: DispatchTimeInterval
   weak var destination: Destination?
-  
+
   init(
     destination: Destination,
     interval: Double,
     qos: DispatchQoS.QoSClass,
     after: AfterThrottling
     ) {
-    
+
     self.destination = destination
     self.timerInterval = interval.dispatchInterval
     self.queue = DispatchQueue.global(qos: qos)
     self.after = after
   }
-  
+
   func eventHandler(source: Source) -> AnyObject? {
     return source.makeHandler(executor: .immediate) { (event, originalExecutor) in
-      
+
       self.locking.lock()
       defer { self.locking.unlock() }
-      
+
       switch event {
       case let .completion(completion):   self.onComplete(completion: completion, executor: originalExecutor)
       case let .update(update):           self.onUpdate(update: update)
       }
     }
   }
-  
+
   func onUpdate(update: Destination.Update) {
     if timer == nil {
       sendNow(update: update)
       createTimer()
     } else {
-      
+
       // decide which update to send
       // after throttling interval
       switch after {
@@ -124,10 +131,10 @@ where Source.Update == Destination.Update, Source.Success == Destination.Success
       case .sendFirst:    if nextUpdate == nil { nextUpdate = update }
       case .none:         break
       }
-      
+
     }
   }
-  
+
   func onComplete(completion: Fallible<Source.Success>, executor: Executor) {
     if let update = nextUpdate {
       self.sendNow(update: update)
@@ -141,14 +148,14 @@ extension ThrottleEventSourceHelper {
     nextUpdate = nil
     destination?.update(update)
   }
-  
+
   private func createTimer() {
     timer = DispatchSource.makeTimerSource(queue: queue)
     timer!.schedule(deadline: DispatchTime.now() + timerInterval)
     timer!.setEventHandler { self.timerHandler() }
     timer!.resume()
   }
-  
+
   private func timerHandler() {
     if let update = nextUpdate {
       sendNow(update: update)
@@ -162,6 +169,8 @@ extension ThrottleEventSourceHelper {
 public extension Double {
   var dispatchInterval: DispatchTimeInterval {
     let microseconds = Int64(self * 1000000) // perhaps use nanoseconds, though would more often be > Int.max
-    return microseconds < Int.max ? DispatchTimeInterval.microseconds(Int(microseconds)) : DispatchTimeInterval.seconds(Int(self))
+    return microseconds < Int.max
+    ? DispatchTimeInterval.microseconds(Int(microseconds))
+    : DispatchTimeInterval.seconds(Int(self))
   }
 }

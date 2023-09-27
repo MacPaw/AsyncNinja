@@ -1,6 +1,6 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.4
 //
-//  Copyright (c) 2016-2020 Anton Mironov
+//  Copyright (c) 2016-2021 Anton Mironov
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"),
@@ -25,6 +25,12 @@ import PackageDescription
 
 let package = Package(
   name: "AsyncNinja",
+  platforms: [
+    .macOS(.v10_13),
+    .iOS(.v11),
+    .tvOS(.v11),
+    .watchOS(.v4)
+  ],
   products: [
     .executable(name: "ImportingTestExecutable", targets: [
       "ImportingTestExecutable"
@@ -56,7 +62,7 @@ let package = Package(
       path: "Tests/AsyncNinjaReactiveUI"
     ),
 
-    .target(
+    .executableTarget(
       name: "ImportingTestExecutable",
       dependencies: ["AsyncNinja", "AsyncNinjaReactiveUI"],
       path: "Sources/ImportingTestExecutable"
