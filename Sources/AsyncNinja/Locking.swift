@@ -98,7 +98,7 @@ public func makeLocking(isFair: Bool = false) -> Locking {
     if isFair {
       return PThreadLocking()
     } else if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
-      return NSRecursiveLock()
+      return UnfairLockLocking()
     } else {
       return SpinLockLocking()
     }
