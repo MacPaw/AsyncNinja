@@ -25,6 +25,7 @@ import Foundation
 #if os(Linux)
   import Glibc
 #endif
+import os
 
 /// Context indepedent locking. Non-recursive.
 public protocol Locking: AnyObject {
@@ -97,6 +98,8 @@ public func makeLocking(isFair: Bool = false) -> Locking {
   #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
     if isFair {
       return PThreadLocking()
+    } else if #available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *) {
+      return OSAllocatedUnfairLocking()
     } else if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
       return UnfairLockLocking()
     } else {
@@ -140,6 +143,22 @@ class PlaceholderLocking: Locking {
 }
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+
+@available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
+class OSAllocatedUnfairLocking: Locking {
+  private var _lock = OSAllocatedUnfairLock()
+
+  /// Locks. Be sure to balance with unlock
+  public func lock() {
+    _lock.lock()
+  }
+
+  /// Unlocks. Be sure to balance with lock
+  public func unlock() {
+    _lock.unlock()
+  }
+}
+
 /// **internal use only**
 @available(macOS, deprecated: 10.12, message: "Use UnfairLockLocking instead")
 @available(iOS, deprecated: 10.0, message: "Use UnfairLockLocking instead")

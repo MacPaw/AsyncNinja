@@ -56,6 +56,27 @@ class ReleasePoolTests: XCTestCase {
     XCTAssertNil(weakBoxedTwo)
   }
 
+  func testHalfBox() {
+
+    let releasePool = ReleasePool()
+    let releasePool2 = ReleasePool()
+
+    let boxedOne: AtomicMutableBox<Int?>? = AtomicMutableBox(1)
+    let boxedTwo: AtomicMutableBox<Int?>? = AtomicMutableBox(2)
+
+    releasePool.insert(HalfRetainer(box: boxedOne!))
+    releasePool.insert(HalfRetainer(box: boxedTwo!))
+
+    releasePool2.insert(HalfRetainer(box: boxedOne!))
+    releasePool2.insert(HalfRetainer(box: boxedTwo!))
+
+    releasePool.drain()
+    releasePool2.drain()
+
+    XCTAssertNil(boxedOne!.value)
+    XCTAssertNil(boxedTwo!.value)
+  }
+
   func testConcurrent() {
     let qosClasses: [DispatchQoS.QoSClass] = [.background, .utility, .default, .userInitiated, .userInteractive]
     let queues = qosClasses.map(DispatchQueue.global(qos:))

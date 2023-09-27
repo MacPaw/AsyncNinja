@@ -59,12 +59,13 @@ class AtomicMutableBox<T> {
       oldValue = nil // reference count of old value -1
     }
   }
+  
   private var _value: T
   private var _locking: Locking
 
   init(_ value: T, isFair: Bool = false) {
     _value = value
-    _locking = makeLocking(isFair: isFair)
+    _locking = makeLocking(isFair: false)
   }
 }
 
