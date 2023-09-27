@@ -42,7 +42,9 @@ public class ReleasePool {
 
   deinit {
     _locking.lock()
+    _objectsContainer = []
     let blocksContainer = _blocksContainer
+    _blocksContainer = []
     _locking.unlock()
     for block in blocksContainer {
       block()
