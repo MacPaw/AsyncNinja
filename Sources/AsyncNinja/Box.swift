@@ -43,8 +43,9 @@ class AtomicMutableBox<T> {
   var value: T {
     get {
       _locking.lock()
-      defer { _locking.unlock() }
-      return _value
+      let value = _value
+      _locking.unlock()
+      return value
     }
     set {
       // this tricky code is made to avoid deinitialization with lock
