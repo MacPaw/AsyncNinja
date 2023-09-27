@@ -21,6 +21,7 @@
 //
 
 import Dispatch
+import os
 #if os(Linux)
   import Glibc
 #endif
@@ -96,6 +97,8 @@ public func makeLocking(isFair: Bool = false) -> Locking {
   #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
     if isFair {
       return PThreadLocking()
+    } else if #available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *) {
+        return UnfairLockLocking1300()
     } else if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
       return UnfairLockLocking()
     } else {
@@ -177,6 +180,19 @@ class UnfairLockLocking: Locking {
 
   func unlock() {
     os_unfair_lock_unlock(_lock)
+  }
+}
+
+@available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
+class UnfairLockLocking1300: Locking {
+  private let _lock = OSAllocatedUnfairLock()
+
+  func lock() {
+      _lock.lock()
+  }
+
+  func unlock() {
+      _lock.unlock()
   }
 }
 #endif
