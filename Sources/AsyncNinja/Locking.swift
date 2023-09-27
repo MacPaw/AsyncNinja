@@ -21,6 +21,7 @@
 //
 
 import Dispatch
+import Foundation
 #if os(Linux)
   import Glibc
 #endif
@@ -97,7 +98,7 @@ public func makeLocking(isFair: Bool = false) -> Locking {
     if isFair {
       return PThreadLocking()
     } else if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
-      return UnfairLockLocking()
+      return NSRecursiveLock()
     } else {
       return SpinLockLocking()
     }
@@ -155,6 +156,8 @@ class SpinLockLocking: Locking {
     OSSpinLockUnlock(&_lock)
   }
 }
+
+extension NSRecursiveLock: Locking {}
 
 /// **internal use only**
 @available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *)
