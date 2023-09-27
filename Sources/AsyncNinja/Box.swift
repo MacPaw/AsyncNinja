@@ -82,8 +82,4 @@ class HalfRetainer<T> {
   init(box: AtomicMutableBox<T?>) {
     self.box = box
   }
-
-  deinit {
-    box.value = nil
-  }
 }
