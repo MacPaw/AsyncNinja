@@ -47,15 +47,14 @@ class AtomicMutableBox<T> {
       return _value
     }
     set {
-      // this tricky code is made to avoid deinitialization with lock
-      // because deinitialization can ask for lock too
-
       _locking.lock()
-      var oldValue: T? = _value // reference count of old value +1
-      _value = newValue // reference count of old value -1
+      let oldValue = _value
+      _value = newValue
       _locking.unlock()
-      _ = oldValue
-      oldValue = nil // reference count of old value -1
+      // Prevent ARC from releasing oldValue while the lock is held.
+      // Deallocation of oldValue can re-enter this setter (via HalfRetainer.deinit),
+      // which would recursively lock the non-reentrant os_unfair_lock.
+      withExtendedLifetime(oldValue) {}
     }
   }
   private var _value: T
